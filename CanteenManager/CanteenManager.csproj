@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Report\rpPrintBill.rdlc" />
+    <None Remove="Report\rpRevenue.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Report\rpPrintBill.rdlc" />
+    <EmbeddedResource Include="Report\rpRevenue.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReportViewerCore.WinForms" Version="15.1.17" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.116" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="6.0.0" />
+    <PackageReference Include="Unity" Version="5.11.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="DataSet\dsBill.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>dsBill.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="DataSet\dsRevenue.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>dsRevenue.xsd</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DataSet\dsBill.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsBill.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="DataSet\dsRevenue.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsRevenue.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>
