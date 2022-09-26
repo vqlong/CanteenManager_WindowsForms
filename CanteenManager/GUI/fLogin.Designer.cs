@@ -253,7 +253,7 @@
             this.txbDatabase.Name = "txbDatabase";
             this.txbDatabase.Size = new System.Drawing.Size(171, 23);
             this.txbDatabase.TabIndex = 1;
-            this.txbDatabase.Text = "QuanLyCanteen";
+            this.txbDatabase.Text = "CanteenManager";
             // 
             // label4
             // 

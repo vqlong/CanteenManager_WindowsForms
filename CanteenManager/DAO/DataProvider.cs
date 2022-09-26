@@ -21,7 +21,7 @@ namespace CanteenManager.DAO
 
         private DataProvider() { }
 
-        private string connectionStr = @"Data Source=.\sqlexpress;Initial Catalog=QuanLyCanteen;Integrated Security=True";
+        private string connectionStr = @"Data Source=.\sqlexpress;Initial Catalog=CanteenManager;Integrated Security=True";
 
         /// <summary>
         /// Kiểm tra kết nối tới Server.
