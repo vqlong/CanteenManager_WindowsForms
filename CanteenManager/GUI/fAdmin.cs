@@ -3,7 +3,7 @@
 namespace CanteenManager
 {
     //Lệnh using đặt trong một namespace sẽ có độ ưu tiên cao hơn so với using đặt bên ngoài namespace.
-    //=> giả sử bên ngoài viết using QuanLyQuanCafe.DAO để khai báo 1 namespace khác
+    //=> giả sử bên ngoài viết using CanteenManager.DAO để khai báo 1 namespace khác
     //thì lệnh using dưới đây sẽ được ưu tiên hơn.
     using DAO;
     using Microsoft.Reporting.WinForms;
@@ -30,7 +30,7 @@ namespace CanteenManager
             LoadBinding();
 
             ////Thời điểm form chưa load xong,
-            ////chạy hàm này ở đây nó éo hiển thị 'new Font("Arial", 16, FontStyle.Bold)' cho dòng cuối (hiện tổng tiền) của dtgvBill
+            ////chạy hàm này ở đây nó không hiển thị 'new Font("Arial", 16, FontStyle.Bold)' cho dòng cuối (hiện tổng tiền) của dtgvBill
             //LoadDataBillByDate(dtpkFromDate.Value, dtpkToDate.Value);               
         }
 
@@ -375,8 +375,7 @@ namespace CanteenManager
             //Trải đều, căn giữa
             dtgvBill.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dtgvBill.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dtgvBill.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            //dtgvBill.RowHeadersWidth = 20;
+            dtgvBill.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;           
             dtgvBill.RowHeadersVisible = false;
             dtgvBill.AllowUserToAddRows = false;
             dtgvBill.AllowUserToResizeRows = false;
@@ -385,13 +384,10 @@ namespace CanteenManager
 
             //Chỉnh độ rộng các cột
             dtgvBill.Columns[0].Width = 40;
-            //dtgvBill.Columns[1].Width = 160;
-            //dtgvBill.Columns[2].Width = 160;
             dtgvBill.Columns[3].Width = 120;
             dtgvBill.Columns[4].Width = 120;
 
             //Chỉnh tiêu đề của 3 cột này cho nó vào chính giữa
-            //dtgvBill.Columns[0].HeaderCell.Style.Padding = new Padding(20, 0, 0, 0);
             dtgvBill.Columns[3].HeaderCell.Style.Padding = new Padding(15, 0, 0, 0);
             dtgvBill.Columns[4].HeaderCell.Style.Padding = new Padding(10, 0, 0, 0);
 
@@ -445,7 +441,6 @@ namespace CanteenManager
             dtgvBill.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dtgvBill.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dtgvBill.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            //dtgvBill.RowHeadersWidth = 20;
             dtgvBill.RowHeadersVisible = false;
             dtgvBill.AllowUserToAddRows = false;
             dtgvBill.AllowUserToResizeRows = false;
@@ -454,13 +449,10 @@ namespace CanteenManager
 
             //Chỉnh độ rộng các cột
             dtgvBill.Columns[0].Width = 40;
-            //dtgvBill.Columns[1].Width = 160;
-            //dtgvBill.Columns[2].Width = 160;
             dtgvBill.Columns[3].Width = 120;
             dtgvBill.Columns[4].Width = 120;
 
             //Chỉnh tiêu đề của 3 cột này cho nó vào chính giữa
-            //dtgvBill.Columns[0].HeaderCell.Style.Padding = new Padding(20, 0, 0, 0);
             dtgvBill.Columns[3].HeaderCell.Style.Padding = new Padding(15, 0, 0, 0);
             dtgvBill.Columns[4].HeaderCell.Style.Padding = new Padding(10, 0, 0, 0);
 
@@ -636,7 +628,7 @@ namespace CanteenManager
             DataTable data2 = BillDAO.Instance.GetRevenueByMonth(fromDate, toDate);
             ReportDataSource rds2 = new ReportDataSource("dsRevenueByMonth", data2);
 
-            rpvRevenue.LocalReport.ReportEmbeddedResource = "QuanLyCanteen.Report.rpRevenue.rdlc";
+            rpvRevenue.LocalReport.ReportEmbeddedResource = "CanteenManager.Report.rpRevenue.rdlc";
             rpvRevenue.LocalReport.DataSources.Clear();
             rpvRevenue.LocalReport.DataSources.Add(rds);
             rpvRevenue.LocalReport.DataSources.Add(rds2);

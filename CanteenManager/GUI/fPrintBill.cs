@@ -21,7 +21,7 @@ namespace CanteenManager
             DataTable data = DataProvider.Instance.ExecuteQuery($"SELECT * FROM Bill WHERE Bill.ID = {billID}");
             ReportDataSource rds2 = new ReportDataSource("dsBill", data);
 
-            rpvPrintBill.LocalReport.ReportEmbeddedResource = "QuanLyCanteen.Report.rpPrintBill.rdlc";
+            rpvPrintBill.LocalReport.ReportEmbeddedResource = "CanteenManager.Report.rpPrintBill.rdlc";
             rpvPrintBill.LocalReport.DataSources.Clear();
             rpvPrintBill.LocalReport.DataSources.Add(rds);
             rpvPrintBill.LocalReport.DataSources.Add(rds2);
