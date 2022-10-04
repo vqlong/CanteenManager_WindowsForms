@@ -1,4 +1,8 @@
-﻿using System.Data;
+﻿using System.ComponentModel;
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Reflection;
 
 namespace CanteenManager.DTO
 {
@@ -34,9 +38,32 @@ namespace CanteenManager.DTO
         public AccountType AccType { get => accType; set => accType = value; }
     }
 
+    [TypeConverter(typeof(AccountTypeConverter))]
     public enum AccountType
     {
+        [Description("Quản lý")]
         Admin = 1,
+        [Description("Nhân viên")]
         Staff = 0
+    }
+
+    public class AccountTypeConverter : EnumConverter
+    {
+        public AccountTypeConverter([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicFields)] Type type) : base(type)
+        {
+        }
+
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if (destinationType == typeof(string))
+            {
+                FieldInfo info = typeof(AccountType).GetField(value.ToString());
+                DescriptionAttribute description = info?.GetCustomAttribute<DescriptionAttribute>();
+
+                return description?.Description;
+            }
+
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
     }
 }

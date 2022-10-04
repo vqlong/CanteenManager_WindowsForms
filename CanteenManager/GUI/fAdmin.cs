@@ -654,6 +654,8 @@ namespace CanteenManager
 
         private void btnViewBill_Click(object sender, EventArgs e)
         {
+            nmPageNumber.Value = 1;
+
             if (ckbShowByPage.Checked)
                 LoadDataBillByDateAndPage(dtpkFromDate.Value, dtpkToDate.Value, (int)nmPageNumber.Value, (int)nmPageRow.Value);
             else

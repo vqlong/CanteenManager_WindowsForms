@@ -178,9 +178,9 @@
             this.lblTestConnection.BackColor = System.Drawing.Color.Gainsboro;
             this.lblTestConnection.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblTestConnection.Font = new System.Drawing.Font("Segoe UI", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            this.lblTestConnection.Location = new System.Drawing.Point(0, 188);
+            this.lblTestConnection.Location = new System.Drawing.Point(-4, 188);
             this.lblTestConnection.Name = "lblTestConnection";
-            this.lblTestConnection.Size = new System.Drawing.Size(348, 37);
+            this.lblTestConnection.Size = new System.Drawing.Size(356, 37);
             this.lblTestConnection.TabIndex = 1;
             this.lblTestConnection.Text = "Click để kiểm tra kết nối...";
             this.lblTestConnection.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
