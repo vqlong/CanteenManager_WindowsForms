@@ -9,28 +9,24 @@ namespace CanteenManager.DAO
     /// </summary>
     public class SQLiteDataProvider : IDataProvider
     {
-        //private static readonly SQLiteDataProvider instance = new SQLiteDataProvider();
-
-        //public static SQLiteDataProvider Instance => instance;
-
         private SQLiteDataProvider() { }
 
-        private string connectionStr = "Data Source = localdb.db; foreign keys=true";
+        private string connectionString = "Data Source = localdb.db; foreign keys=true";
 
         /// <summary>
         /// Kiểm tra kết nối.
         /// </summary>
-        /// <param name="connectionStr">Chuỗi kết nối.</param>
+        /// <param name="connectionString">Chuỗi kết nối.</param>
         /// <returns>
-        /// true, nếu thành công, đồng thời gán chuỗi kết nối này cho biến connectionStr của SQLiteDataProvider.
+        /// true, nếu thành công, đồng thời gán chuỗi kết nối này cho biến connectionString của SQLiteDataProvider.
         /// <br>nếu thất bại, thông báo lỗi và trả về false.</br>
         /// </returns>
-        public bool TestConnection(string connectionStr)
+        public bool TestConnection(string connectionString)
         {          
 
             try
             {
-                using (SQLiteConnection connection = new SQLiteConnection(connectionStr))
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
 
@@ -38,7 +34,7 @@ namespace CanteenManager.DAO
 
                     if ((System.Int64)command.ExecuteScalar() == 1)
                     {
-                        this.connectionStr = connectionStr;
+                        this.connectionString = connectionString;
                         return true;
                     }
                     else
@@ -65,14 +61,9 @@ namespace CanteenManager.DAO
         {
             DataTable data = new DataTable();
 
-            using (SQLiteConnection connection = new SQLiteConnection(connectionStr))
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
-
-                ////Tạo 1 hàm ToLower cho database, hàm lower mặc định của sqlite chỉ nhận ASCII
-                //connection.BindFunction(new SQLiteFunctionAttribute("tolower", 1, FunctionType.Scalar),
-                //                        (Func<object[], object>)((object[] args) => ((string)((object[])args[1])[0]).ToLower()),
-                //                        null);
 
                 SQLiteCommand command = new SQLiteCommand(query, connection);
 
@@ -109,26 +100,16 @@ namespace CanteenManager.DAO
         /// Trả về số số dòng áp dụng thành công khi chạy câu truy vấn.
         /// </summary>
         /// <param name="query">Câu truy vấn.</param>
-        /// <param name="parameter">Mảng các giá trị truyền cho các parameter của store procedure
-        /// (nếu câu truy vấn là thực thi 1 store procedure).</param>
+        /// <param name="parameter">Mảng các parameter.</param>
         /// <returns></returns>
         public int ExecuteNonQuery(string query, object[] parameter = null)
         {
             //tạo biến chứa số dòng áp dụng thành công khi chạy câu truy vấn
             int data = 0;
 
-            using (SQLiteConnection connection = new SQLiteConnection(connectionStr))
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
-
-                ////Tạo 1 hàm ToLower cho database, hàm lower mặc định của sqlite chỉ nhận ASCII
-                //connection.BindFunction(new SQLiteFunctionAttribute("tolower", 1, FunctionType.Scalar),
-                //                        (Func<object[], object>)((object[] args) => ((string)((object[])args[1])[0]).ToLower()),
-                //                        null);
-
-                //enable foreign_keys, mặc định nó không bật
-                //SQLiteCommand command = new SQLiteCommand("PRAGMA foreign_keys = ON;", connection);
-                //command.ExecuteNonQuery();
 
                 SQLiteCommand command = new SQLiteCommand(query, connection);
 
@@ -164,15 +145,14 @@ namespace CanteenManager.DAO
         /// Trả về cột đầu tiên của dòng đầu tiên trong bảng kết quả.
         /// </summary>
         /// <param name="query">Câu truy vấn.</param>
-        /// <param name="parameter">Mảng các giá trị truyền cho các parameter của store procedure
-        /// (nếu câu truy vấn là thực thi 1 store procedure).</param>
+        /// <param name="parameter">Mảng các parameter.</param>
         /// <returns></returns>
         public object ExecuteScalar(string query, object[] parameter = null)
         {
             //tạo biến chứa kết quả trả về
             object data = 0;
 
-            using (SQLiteConnection connection = new SQLiteConnection(connectionStr))
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 

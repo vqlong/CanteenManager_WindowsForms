@@ -13,11 +13,11 @@ namespace CanteenManager.DTO
     {
         public Food(int id, string name, int categoryID, double price, UsingState foodStatus)
         {
-            this.ID = id;
-            this.Name = name;
-            this.CategoryID = categoryID;
-            this.Price = price;
-            this.FoodStatus = foodStatus;
+            ID = id;
+            Name = name;
+            CategoryID = categoryID;
+            Price = price;
+            FoodStatus = foodStatus;
         }
 
         /// <summary>
@@ -26,11 +26,11 @@ namespace CanteenManager.DTO
         /// <param name="row"></param>
         public Food(DataRow row)
         {
-            this.ID = Convert.ToInt32(row["ID"]);
-            this.Name = row["Name"].ToString();
-            this.CategoryID = (int)row["CategoryID"];
-            this.Price = (double)row["Price"];
-            this.FoodStatus = (UsingState)row["FoodStatus"];
+            ID = Convert.ToInt32(row["ID"]);
+            Name = row["Name"].ToString();
+            CategoryID = (int)row["CategoryID"];
+            Price = (double)row["Price"];
+            FoodStatus = (UsingState)row["FoodStatus"];
         }
 
         private int iD;

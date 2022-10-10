@@ -12,7 +12,6 @@ namespace CanteenManager
             {
                 LoadBill(billID);
 
-                //btnPrintBill.Click += delegate { BillDetailDAO.Instance.PrintListBillDetailByBillID(billID); };
                 btnPrintBill.Click += delegate { new fPrintBill(billID).ShowDialog(); };
             }
 

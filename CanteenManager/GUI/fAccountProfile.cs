@@ -13,14 +13,14 @@ namespace CanteenManager
         {
             InitializeComponent();
 
-            this.LoginAccount = loginAccount;
+            LoginAccount = loginAccount;
 
             //Đăng ký sự kiện Validating
             txbDisplayName.Validating += TxbDisplayName_Validating;
             txbNewPassWord.Validating += TxbNewPassWord_Validating;
             txbConfirmPassWord.Validating += TxbConfirmPassWord_Validating;
 
-            ShowAccount(this.LoginAccount);
+            ShowAccount(LoginAccount);
         }
         
         private Account loginAccount;
@@ -48,18 +48,18 @@ namespace CanteenManager
         void UpdateAccount()
         {
             //Validate các TextBox
-            if (!this.ValidateChildren(ValidationConstraints.Enabled))
+            if (!ValidateChildren(ValidationConstraints.Enabled))
             {
                 return;
             }
 
-            if (AccountDAO.Instance.Login(this.LoginAccount.UserName, txbPassWord.Text) != null) 
+            if (AccountDAO.Instance.Login(LoginAccount.UserName, txbPassWord.Text) != null) 
             {
-                if (AccountDAO.Instance.Update(this.LoginAccount.UserName, txbDisplayName.Text, txbNewPassWord.Text))
+                if (AccountDAO.Instance.Update(LoginAccount.UserName, txbDisplayName.Text, txbNewPassWord.Text))
                 {
                     //Load lại tài khoản sau khi update
                     //Nếu không nhập mật khẩu mới thì lấy mật khẩu cũ truyền vào tham số, ngược lại thì truyền mật khẩu mới
-                    this.LoginAccount = AccountDAO.Instance.Login(this.LoginAccount.UserName, string.IsNullOrEmpty(txbNewPassWord.Text) ? txbPassWord.Text : txbNewPassWord.Text);
+                    LoginAccount = AccountDAO.Instance.Login(LoginAccount.UserName, string.IsNullOrEmpty(txbNewPassWord.Text) ? txbPassWord.Text : txbNewPassWord.Text);
 
                     //this.Refresh();
 
@@ -94,7 +94,7 @@ namespace CanteenManager
 
         private void btnExit_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)

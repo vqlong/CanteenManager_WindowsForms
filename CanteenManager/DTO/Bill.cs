@@ -6,25 +6,25 @@ namespace CanteenManager.DTO
     {
         public Bill(int id, DateTime dateCheckIn, DateTime dateCheckOut, int tableID, int status, int discount = 0, double totalPrice = 0)
         {
-            this.ID = id;
-            this.DateCheckIn = dateCheckIn;
-            this.DateCheckOut = dateCheckOut;
-            this.TableID = tableID;
-            this.Status = status;
-            this.Discount = discount;
-            this.TotalPrice = totalPrice;
+            ID = id;
+            DateCheckIn = dateCheckIn;
+            DateCheckOut = dateCheckOut;
+            TableID = tableID;
+            Status = status;
+            Discount = discount;
+            TotalPrice = totalPrice;
         }
 
         public Bill(DataRow row)
         {
-            this.ID = Convert.ToInt32(row["ID"]);
-            this.DateCheckIn = Convert.ToDateTime(row["DateCheckIn"]);
+            ID = Convert.ToInt32(row["ID"]);
+            DateCheckIn = Convert.ToDateTime(row["DateCheckIn"]);
             //Dưới database, mặc định khi chạy proc thêm mới 1 Bill, DateCheckOut sẽ được gán là NULL => cần kiểm tra giá trị này khi xử lý trên C#
-            this.DateCheckOut = row["DateCheckOut"] == DBNull.Value ? null : Convert.ToDateTime(row["DateCheckOut"]);
-            this.TableID = (int)row["TableID"];
-            this.Status = (int)row["BillStatus"];
-            this.Discount = (int)row["Discount"];
-            this.TotalPrice = (double)row["TotalPrice"];
+            DateCheckOut = row["DateCheckOut"] == DBNull.Value ? null : Convert.ToDateTime(row["DateCheckOut"]);
+            TableID = (int)row["TableID"];
+            Status = (int)row["BillStatus"];
+            Discount = (int)row["Discount"];
+            TotalPrice = (double)row["TotalPrice"];
         }
 
 

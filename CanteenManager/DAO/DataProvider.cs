@@ -10,7 +10,6 @@ namespace CanteenManager.DAO
     /// </summary>
     public class DataProvider : IDataProvider
     {
-        //Áp dụng singleton cho class DataProvider
         private static IDataProvider instance;
 
         public static IDataProvider Instance
@@ -21,7 +20,7 @@ namespace CanteenManager.DAO
 
         private DataProvider() { }
 
-        private string connectionStr = @"Data Source=.\sqlexpress;Initial Catalog=CanteenManager;Integrated Security=True";
+        private string connectionString = @"Data Source=.\sqlexpress;Initial Catalog=CanteenManager;Integrated Security=True";
 
         /// <summary>
         /// Kiểm tra kết nối tới Server.
@@ -33,15 +32,15 @@ namespace CanteenManager.DAO
         /// <param name="password"></param>
         /// <param name="timeout"></param>
         /// <returns>
-        /// true, nếu thành công, đồng thời gán chuỗi kết nối này cho biến connectionStr của DataProvider.
+        /// true, nếu thành công, đồng thời gán chuỗi kết nối này cho biến connectionString của DataProvider.
         /// <br>nếu thất bại, thông báo lỗi và trả về false.</br>
         /// </returns>
-        public bool TestConnection(string connectionStr)
+        public bool TestConnection(string connectionString)
         {          
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionStr))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
@@ -49,7 +48,7 @@ namespace CanteenManager.DAO
 
                     if ((int)command.ExecuteScalar() == 1)
                     {
-                        this.connectionStr = connectionStr;
+                        this.connectionString = connectionString;
                         return true;
                     }
                     else
@@ -76,7 +75,7 @@ namespace CanteenManager.DAO
         {
             DataTable data = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionStr))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -115,15 +114,14 @@ namespace CanteenManager.DAO
         /// Trả về số số dòng áp dụng thành công khi chạy câu truy vấn.
         /// </summary>
         /// <param name="query">Câu truy vấn.</param>
-        /// <param name="parameter">Mảng các giá trị truyền cho các parameter của store procedure
-        /// (nếu câu truy vấn là thực thi 1 store procedure).</param>
+        /// <param name="parameter">Mảng các parameter.</param>
         /// <returns></returns>
         public int ExecuteNonQuery(string query, object[] parameter = null)
         {
             //tạo biến chứa số dòng áp dụng thành công khi chạy câu truy vấn
             int data = 0;
 
-            using (SqlConnection connection = new SqlConnection(connectionStr))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -161,15 +159,14 @@ namespace CanteenManager.DAO
         /// Trả về cột đầu tiên của dòng đầu tiên trong bảng kết quả.
         /// </summary>
         /// <param name="query">Câu truy vấn.</param>
-        /// <param name="parameter">Mảng các giá trị truyền cho các parameter của store procedure
-        /// (nếu câu truy vấn là thực thi 1 store procedure).</param>
+        /// <param name="parameter">Mảng các parameter.</param>
         /// <returns></returns>
         public object ExecuteScalar(string query, object[] parameter = null)
         {
             //tạo biến chứa kết quả trả về
             object data = 0;
 
-            using (SqlConnection connection = new SqlConnection(connectionStr))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 

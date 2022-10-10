@@ -97,8 +97,6 @@ namespace CanteenManager
             {
                 MessageBox.Show("Sai tên đăng nhập hoặc mật khẩu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-
         }
 
         private void btnExit_Click(object sender, EventArgs e)

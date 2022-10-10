@@ -25,42 +25,26 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Trả về tài khoản dựa theo tên đăng nhập và mật khẩu nhập vào.
         /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="passWord"></param>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
         /// <returns>Trả về 1 tài khoản nếu đăng nhập và mật khẩu trùng khớp, ngược lại trả về null.</returns>
-        public Account Login(string userName, string passWord)
+        public Account Login(string username, string password)
         {
-            ////câu lệnh luôn đúng khi nhập passWord là ' OR 1=1 --
-            //string query = $"SELECT * FROM dbo.Account WHERE UserName = '{userName}' AND PassWordAcc = '{passWord}'";
-            //DataTable result = DataProvider.Instance.ExecuteQuery(query);
-
-            ////Vẫn dùng SELECT nhưng có tham số 
-            //string query = $"SELECT * FROM dbo.Account WHERE UserName = @u AND PassWordAcc = @p";
-
-            //Dùng Store Procedure với tham số
             string query = "EXEC USP_Login @UserName, @PassWord";
 
             //Chuyển passWord thành mảng byte
-            //byte[] bytePassWord = Encoding.Unicode.GetBytes(passWord);
-            //byte[] bytePassWord1 = Encoding.UTF32.GetBytes(passWord);
-            //byte[] bytePassWord2 = Encoding.UTF8.GetBytes(passWord);
-            byte[] bytePassWord = ASCIIEncoding.ASCII.GetBytes(passWord);
+            byte[] bytePassword = ASCIIEncoding.ASCII.GetBytes(password);
 
             //Tạo hash
-            //byte[] md5PassWord = new MD5CryptoServiceProvider().ComputeHash(bytePassWord);
-            //byte[] md5PassWord = MD5.Create().ComputeHash(bytePassWord);
-            byte[] sha256PassWord = SHA256.Create().ComputeHash(bytePassWord);
+            byte[] sha256Password = SHA256.Create().ComputeHash(bytePassword);
 
-            string hashStr = "";
-            foreach (var item in sha256PassWord)
+            string hashString = "";
+            foreach (var item in sha256Password)
             {
-                hashStr += Convert.ToString(item);
+                hashString += Convert.ToString(item);
             }
 
-            ////Chuyển về dạng chuỗi
-            //string s = Encoding.ASCII.GetString(sha256PassWord);
-
-            DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { userName, hashStr });
+            DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { username, hashString });
 
             if (data.Rows.Count == 1)
             {
@@ -73,28 +57,28 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Update DisplayName và PassWord.
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="username"></param>
         /// <param name="displayName"></param>
-        /// <param name="passWord"></param>
+        /// <param name="password"></param>
         /// <returns>true, nếu update thành công, ngược lại, false.</returns>
-        public bool Update(string userName, string displayName = null, string passWord = null, int? accType = null)
+        public bool Update(string username, string displayName = null, string password = null, int? accType = null)
         {
             string query = "EXEC USP_UpdateAccount @userName, @displayName, @passWord, @accType";
 
-            if (!string.IsNullOrEmpty(passWord))
+            if (!string.IsNullOrEmpty(password))
             {
-                byte[] bytePassWord = ASCIIEncoding.ASCII.GetBytes(passWord);
+                byte[] bytePassword = ASCIIEncoding.ASCII.GetBytes(password);
 
-                byte[] sha256PassWord = SHA256.Create().ComputeHash(bytePassWord);
+                byte[] sha256Password = SHA256.Create().ComputeHash(bytePassword);
 
-                passWord = "";
-                foreach (var item in sha256PassWord)
+                password = "";
+                foreach (var item in sha256Password)
                 {
-                    passWord += Convert.ToString(item);
+                    password += Convert.ToString(item);
                 }
             }
 
-            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { userName, displayName, passWord, accType });
+            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { username, displayName, password, accType });
 
             //result = 0: không update được cái nào
             //result = 1: chỉ update được DisplayName hoặc PassWord hoặc AccType

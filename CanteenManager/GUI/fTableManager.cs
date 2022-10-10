@@ -9,13 +9,12 @@ namespace CanteenManager
     /// Form quản lý bàn ăn.
     /// </summary>
     public partial class fTableManager : Form
-    {
-        
+    {       
         public fTableManager(Account loginAccount)
         {
             InitializeComponent();
 
-            this.LoginAccount = loginAccount;
+            LoginAccount = loginAccount;
 
             LoadButton();
 
@@ -44,7 +43,7 @@ namespace CanteenManager
         void ChangeAccount(AccountType accType)
         {
             tsmiAdmin.Enabled = accType == AccountType.Admin;
-            tsmiAccountProfile.Text = "Thông tin cá nhân [" + this.LoginAccount.DisplayName + "]";
+            tsmiAccountProfile.Text = "Thông tin cá nhân [" + LoginAccount.DisplayName + "]";
         }
 
         /// <summary>
@@ -82,9 +81,7 @@ namespace CanteenManager
                         break;
                 }
                 flpTable.Controls.Add(button);
-            }
-
-            
+            }           
         }
 
         /// <summary>
@@ -117,8 +114,6 @@ namespace CanteenManager
                     button.BackColor = Color.LightGray;
                     break;
             }
-
-
         }
 
         /// <summary>
@@ -130,8 +125,7 @@ namespace CanteenManager
             List<Table> listTable = TableDAO.Instance.GetListTableUsing();
 
             cbListTable.DataSource = listTable;
-            cbListTable.DisplayMember = "Name";
-            
+            cbListTable.DisplayMember = "Name";           
         }
 
         /// <summary>
@@ -164,10 +158,6 @@ namespace CanteenManager
                 lsvBill.Items.Add(item);
             }
 
-            ////Cách 1: Đặt lại culture cho Thread chính (đang chạy form) để hiện số theo kiểu tiếng Việt.
-            //Thread.CurrentThread.CurrentCulture = culture;
-            
-            //Cách 2: truyền culture vào hàm ToString().
             txbTotalPrice.Text = billTotalPrice.ToString("c0", culture);
             //Lưu tổng giá tiền vào Tag của txbTotalPrice để dùng cho các bước sau.
             txbTotalPrice.Tag = billTotalPrice;
@@ -264,15 +254,12 @@ namespace CanteenManager
 
         private void tsmiAccountProfile_Click(object sender, EventArgs e)
         {
-            fAccountProfile accountProfile = new fAccountProfile(this.LoginAccount);
+            fAccountProfile accountProfile = new fAccountProfile(LoginAccount);
             accountProfile.ShowDialog();
 
             //Load lại tài khoản đăng nhập sau khi kết thúc form fAccountProfile
-            this.LoginAccount = accountProfile.LoginAccount;
+            LoginAccount = accountProfile.LoginAccount;
             
-            ////Khi set lại LoginAccount, hàm ChangeAccount sẽ được gọi, không cần Refresh hay Update nữa 
-            //this.Refresh();
-            //this.Update();
         }
 
         private void tsmiAbout_Click(object sender, EventArgs e)
@@ -282,12 +269,12 @@ namespace CanteenManager
 
         private void tsmiLogout_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void tsmiAdmin_Click(object sender, EventArgs e)
         {
-            fAdmin admin = new fAdmin(this.LoginAccount);
+            fAdmin admin = new fAdmin(LoginAccount);
             admin.FoodChange += delegate { LoadListFoodByCategoryID((cbCategory.SelectedItem as Category).ID); };
             admin.CategoryChange += delegate { LoadCategory(); };
             admin.TableChange += delegate { LoadButton(); LoadCbListTable(); };
@@ -325,11 +312,7 @@ namespace CanteenManager
                 //Thêm món cho Bill mới vừa tạo
                 BillInfoDAO.Instance.InsertBillInfo(BillDAO.Instance.GetUnCheckBillIDByTableID(table.ID), foodID, foodCount);
 
-                ////Hiển thị lại trạng thái của bàn ăn sau khi thêm hoá đơn mới
-                ////Nếu dùng hàm LoadButton() load lại tất cả button thì màn hình sẽ nháy => xấu vđ
-                //LoadButton();
-                ////Nếu dùng hàm RefreshButton() thì button sẽ mất màu vàng (biểu thị button này đang được click)
-                //RefreshButton(lsvBill.Tag as Button);
+                //Hiển thị lại trạng thái của bàn ăn sau khi thêm hoá đơn mới
                 Button_Click(lsvBill.Tag as Button, new EventArgs());
 
                 //Tạo lại danh sách bàn ăn (để cập nhật lại các thuộc tính)
@@ -451,7 +434,6 @@ namespace CanteenManager
 
                 LoadCbListTable();
             }
-
             
         }
 
@@ -489,9 +471,6 @@ namespace CanteenManager
             {
                 TableDAO.Instance.CombineTable(firstTableID, secondTableID);
 
-                //Cập nhật lại trạng thái cho bàn được chọn thứ 1 (chọn trong flpTable)
-                //RefreshButton(lsvBill.Tag as Button);
-
                 //Click lại vào Button chứa bàn được chọn thứ 2 (chọn từ cbListTable)
                 foreach (Button button in flpTable.Controls)
                 {
@@ -522,7 +501,7 @@ namespace CanteenManager
 
             Bitmap bitmap = new Bitmap(lsvBill.Width, lsvBill.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
             lsvBill.DrawToBitmap(bitmap, new Rectangle(0, 0, lsvBill.Width - 1, lsvBill.Height));
-            //bitmap.Save(@"C:\Users\HolyShit\Desktop\Bill.PNG");           
+         
             e.Graphics.DrawImage(bitmap, new Point(192, 170));
 
             int discount = (int)nmDiscount.Value;
@@ -533,8 +512,6 @@ namespace CanteenManager
             content = $"Thành tiền:\t {txbTotalPrice.Text}\nGiảm giá:\t {discount}%\nPhải trả:\t {billFinalPrice.ToString("c0", culture)}";
             e.Graphics.DrawString(content, fontBold, Brushes.Black, 192, 550);
         }
-
-
 
         #endregion
 

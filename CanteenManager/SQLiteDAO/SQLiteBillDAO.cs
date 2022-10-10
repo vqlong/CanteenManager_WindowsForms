@@ -6,10 +6,6 @@ namespace CanteenManager.DAO
 {
     public class SQLiteBillDAO : IBillDAO
     {
-        //private static readonly SQLiteBillDAO instance = new SQLiteBillDAO();
-
-        //public static SQLiteBillDAO Instance => instance;
-
         private SQLiteBillDAO() { }
 
         /// <summary>

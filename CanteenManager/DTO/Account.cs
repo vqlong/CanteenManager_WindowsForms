@@ -13,17 +13,17 @@ namespace CanteenManager.DTO
     {
         public Account(string userName, string displayName, AccountType accType, string passWord = null)
         {
-            this.UserName = userName;
-            this.DisplayName = displayName;
-            this.AccType = accType;
-            this.PassWord = passWord;
+            UserName = userName;
+            DisplayName = displayName;
+            AccType = accType;
+            PassWord = passWord;
         }
 
         public Account(DataRow row)
         {
-            this.UserName = row["UserName"].ToString();
-            this.DisplayName = row["DisplayName"].ToString();
-            this.AccType = (AccountType)row["AccType"];
+            UserName = row["UserName"].ToString();
+            DisplayName = row["DisplayName"].ToString();
+            AccType = (AccountType)row["AccType"];
             //this.PassWord = row["PassWord"].ToString();
         }
 

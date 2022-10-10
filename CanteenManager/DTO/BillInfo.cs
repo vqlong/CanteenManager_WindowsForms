@@ -6,18 +6,18 @@ namespace CanteenManager.DTO
     {
         public BillInfo(int id, int billID, int foodID, int foodCount)
         {
-            this.ID = id;
-            this.BillID = billID;
-            this.FoodID = foodID;
-            this.FoodCount = foodCount;
+            ID = id;
+            BillID = billID;
+            FoodID = foodID;
+            FoodCount = foodCount;
         }
 
         public BillInfo(DataRow row)
         {
-            this.ID = (int)row["ID"];
-            this.BillID = (int)row["BillID"];
-            this.FoodID = (int)row["FoodID"];
-            this.FoodCount = (int)row["FoodCount"];
+            ID = (int)row["ID"];
+            BillID = (int)row["BillID"];
+            FoodID = (int)row["FoodID"];
+            FoodCount = (int)row["FoodCount"];
         }
 
         private int iD;

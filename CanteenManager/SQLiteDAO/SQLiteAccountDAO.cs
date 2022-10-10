@@ -8,10 +8,6 @@ namespace CanteenManager.DAO
 {
     public class SQLiteAccountDAO : IAccountDAO
     {
-        //private static readonly SQLiteAccountDAO instance = new SQLiteAccountDAO();
-
-        //public static SQLiteAccountDAO Instance => instance;
-
         private SQLiteAccountDAO() { }
 
         public bool DeleteAccount(string userName)

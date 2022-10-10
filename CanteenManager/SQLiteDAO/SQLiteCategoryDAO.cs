@@ -8,10 +8,6 @@ namespace CanteenManager.DAO
     {
         private SQLiteCategoryDAO() { }
 
-        //private static readonly SQLiteCategoryDAO instance = new SQLiteCategoryDAO();
-
-        //public static SQLiteCategoryDAO Instance => instance;
-
         /// <summary>
         /// Lấy tất cả dữ liệu trong bảng FoodCategory từ database để tạo các đối tượng Category và đưa vào danh sách.
         /// </summary>

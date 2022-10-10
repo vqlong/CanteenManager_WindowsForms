@@ -27,7 +27,7 @@ namespace CanteenManager
                 else
                     MessageBox.Show($"Thêm tài khoản thất bại.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 
-                this.Close();
+                Close();
             }
         }
     }

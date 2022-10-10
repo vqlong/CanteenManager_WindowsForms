@@ -9,9 +9,9 @@ namespace CanteenManager.DTO
     {
         public Category(int id, string name, UsingState categoryStatus)
         {
-            this.ID = id;
-            this.Name = name;
-            this.CategoryStatus = categoryStatus;
+            ID = id;
+            Name = name;
+            CategoryStatus = categoryStatus;
         }
 
         /// <summary>
@@ -20,9 +20,9 @@ namespace CanteenManager.DTO
         /// <param name="row"></param>
         public Category(DataRow row)
         {
-            this.ID = Convert.ToInt32(row["ID"]);
-            this.Name = row["Name"].ToString();
-            this.CategoryStatus = (UsingState)row["CategoryStatus"];
+            ID = Convert.ToInt32(row["ID"]);
+            Name = row["Name"].ToString();
+            CategoryStatus = (UsingState)row["CategoryStatus"];
         }
 
         private int iD;

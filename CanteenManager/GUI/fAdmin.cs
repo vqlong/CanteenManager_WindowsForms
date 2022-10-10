@@ -2,9 +2,6 @@
 
 namespace CanteenManager
 {
-    //Lệnh using đặt trong một namespace sẽ có độ ưu tiên cao hơn so với using đặt bên ngoài namespace.
-    //=> giả sử bên ngoài viết using CanteenManager.DAO để khai báo 1 namespace khác
-    //thì lệnh using dưới đây sẽ được ưu tiên hơn.
     using DAO;
     using Microsoft.Reporting.WinForms;
     using CanteenManager.DTO;
@@ -18,20 +15,12 @@ namespace CanteenManager
         {
             InitializeComponent();
 
-            this.LoginAdmin = admin;
+            LoginAdmin = admin;
 
-            ////Nếu tài khoản đăng nhập không phải là "admin" thì không được sử dụng mục Account
-            //if (LoginAdmin.UserName != "admin") tpAccount.Enabled = false;
-            ////Cách khác:
-            //tcAdmin.Selecting += delegate (object? sender, TabControlCancelEventArgs e) { if (LoginAccount.UserName != "admin" && e.TabPage == tpAccount) e.Cancel = true; };
-            
             LoadData();
 
             LoadBinding();
-
-            ////Thời điểm form chưa load xong,
-            ////chạy hàm này ở đây nó không hiển thị 'new Font("Arial", 16, FontStyle.Bold)' cho dòng cuối (hiện tổng tiền) của dtgvBill
-            //LoadDataBillByDate(dtpkFromDate.Value, dtpkToDate.Value);               
+             
         }
 
         #region Fields
@@ -157,15 +146,8 @@ namespace CanteenManager
             dtgvFood.Columns[3].HeaderText = "Giá";
             dtgvFood.Columns[4].HeaderText = "Trạng thái";
 
-            //Chỉnh Food
-            //Nếu autosize của Gridview là Fill thì phải đặt mỗi column là None để tránh null exception
-            //dtgvFood.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            //dtgvFood.Columns[0].Width = 40;
             dtgvFood.Columns[0].FillWeight = 40;
             dtgvFood.Columns[1].FillWeight = 160;
-            //dtgvFood.Columns[2].FillWeight = 100;
-            //dtgvFood.Columns[3].FillWeight = 80;
-            //dtgvFood.Columns[4].FillWeight = 60;
 
             //Tab danh mục
             dtgvCategory.DataSource = categoryBindingSource;
@@ -234,10 +216,10 @@ namespace CanteenManager
             //
             //LoadReport(dtpkFromDate.Value, dtpkToDate.Value);
             //Có thể resize form khi đang ở tab báo cáo
-            tpReport.Enter += delegate { this.FormBorderStyle = FormBorderStyle.Sizable; };
-            tpReport.Leave += delegate { this.FormBorderStyle = FormBorderStyle.FixedSingle; };
+            tpReport.Enter += delegate { FormBorderStyle = FormBorderStyle.Sizable; };
+            tpReport.Leave += delegate { FormBorderStyle = FormBorderStyle.FixedSingle; };
             //Giữ nút btnReport luôn ở giữa form
-            this.SizeChanged += delegate { btnReport.Left = (this.ClientSize.Width - btnReport.Width) / 2; };
+            SizeChanged += delegate { btnReport.Left = (ClientSize.Width - btnReport.Width) / 2; };
 
             //Tạo 1 nút bấm để thoát form khi nhấn ESC
             var btnExit = new Button();
@@ -279,7 +261,10 @@ namespace CanteenManager
         void SetMaxPageNumber()
         {
             var totalRow = BillDAO.Instance.GetNumberBillByDate(dtpkFromDate.Value, dtpkToDate.Value);
-            if (totalRow <= 0) return; //Trong trường hợp người dùng chọn ngày lung tung, totalRow trả về kết quả 0 => thoát
+
+            //Trong trường hợp người dùng chọn ngày lung tung, totalRow trả về kết quả 0 => thoát
+            if (totalRow <= 0) return;
+
             var lastPage = totalRow / (int)nmPageRow.Value;
 
             if (totalRow % (int)nmPageRow.Value != 0) lastPage++;
@@ -299,20 +284,12 @@ namespace CanteenManager
 
             dtpkFromDate2.DataBindings.Add("Value", dtpkFromDate, "Value");
             dtpkToDate2.DataBindings.Add("Value", dtpkToDate, "Value");
-
-            //Khi click chuột chọn lại giá trị ngày trên DateTimePicker,
-            //chỉ có ngày là thay đổi, giờ vẫn theo giá trị được đặt từ trước
-            //dtpkFromDate: 12:00:00 AM, dtpkToDate: 11:59:59 PM
         }
 
         /// <summary>
         /// Lấy danh sách tài khoản cho dtgvAccount.
         /// </summary>
-        void LoadAccount()
-        {
-            accountBindingSource.DataSource = AccountDAO.Instance.GetListAccount();
-
-        }
+        void LoadAccount() => accountBindingSource.DataSource = AccountDAO.Instance.GetListAccount();
 
         void LoadAccountBinding()
         {
@@ -322,28 +299,16 @@ namespace CanteenManager
         }
 
         [Obsolete("Hàm này không dùng nữa", false)]
-        bool InsertAccount()
-        {
-            return true;
-        }
+        bool InsertAccount() => true;
 
-        bool UpdateAccount(string userName, string displayName, string passWord, int? accType)
-        {
-            return AccountDAO.Instance.Update(userName, displayName, passWord, accType);
-        }
+        bool UpdateAccount(string userName, string displayName, string passWord, int? accType) => AccountDAO.Instance.Update(userName, displayName, passWord, accType);
 
-        bool DeleteAccount(string userName)
-        {
-            return AccountDAO.Instance.DeleteAccount(userName);
-        }
+        bool DeleteAccount(string userName) => AccountDAO.Instance.DeleteAccount(userName);
 
         /// <summary>
         /// Lấy danh sách bàn ăn cho dtgvTable.
         /// </summary>
-        void LoadTable()
-        {
-            tableBindingSource.DataSource = TableDAO.Instance.GetListTable();          
-        }
+        void LoadTable() => tableBindingSource.DataSource = TableDAO.Instance.GetListTable(); 
 
         void LoadTableBinding()
         {
@@ -353,15 +318,9 @@ namespace CanteenManager
             txbTableStatus.DataBindings.Add("Text", dtgvTable.DataSource, "Status", false, DataSourceUpdateMode.Never);
         }
 
-        bool InsertTable()
-        {
-            return TableDAO.Instance.InsertTable();
-        }
+        bool InsertTable() => TableDAO.Instance.InsertTable();
 
-        bool UpdateTable(int id, string name, int usingState)
-        {
-            return TableDAO.Instance.UpdateTable(id, name, usingState);
-        }
+        bool UpdateTable(int id, string name, int usingState) => TableDAO.Instance.UpdateTable(id, name, usingState);
 
         /// <summary>
         /// Load danh sách các hoá đơn lên dtgvBill dựa theo ngày truyền vào.
@@ -458,9 +417,7 @@ namespace CanteenManager
 
             //Hiển thị tiền theo kiểu Việt Nam
             dtgvBill.Columns[5].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("vi-vn");
-            dtgvBill.Columns[5].DefaultCellStyle.Format = "c0";
-
-            
+            dtgvBill.Columns[5].DefaultCellStyle.Format = "c0";            
 
             //Cộng tổng tiền các hoá đơn hiện ra trên dtgvBill
             double totalPrice = 0;
@@ -482,47 +439,18 @@ namespace CanteenManager
         /// <summary>
         /// Lấy danh sách thức ăn cho dtgvFood.
         /// </summary>
-        void LoadFood()
-        {
-            //Load data cho dtgvFood,
-            //phải dùng DataTable để có thể sắp xếp => DataProvider.Instance.ExecuteQuery("select * from food ORDER BY CategoryID ASC")
-            foodBindingSource.DataSource = FoodDAO.Instance.GetListFood();
-   
-        }
+        void LoadFood() => foodBindingSource.DataSource = FoodDAO.Instance.GetListFood();  
 
         /// <summary>
         /// Thêm các binding với dtgvFood.
         /// </summary>
         void LoadFoodBinding()
         {
-            ////Xoá các binding cũ trong trường hợp thay đổi trực tiếp dtgvFood.DataSource mà không dùng BindingSource
-            //txbFoodName.DataBindings.Clear();
-            //txbFoodID.DataBindings.Clear();
-            //nmFoodPrice.DataBindings.Clear();
-
-            //Thêm các binding mới
             txbFoodName.DataBindings.Add("Text", dtgvFood.DataSource, "Name", false, DataSourceUpdateMode.Never);
             txbFoodID.DataBindings.Add("Text", dtgvFood.DataSource, "ID", false, DataSourceUpdateMode.Never);
             nmFoodPrice.DataBindings.Add("Value", dtgvFood.DataSource, "Price", false, DataSourceUpdateMode.Never);
             cbFoodCategory.DataBindings.Add("SelectedValue", dtgvFood.DataSource, "CategoryID", false, DataSourceUpdateMode.Never);
             cbFoodStatus.DataBindings.Add("SelectedValue", dtgvFood.DataSource, "FoodStatus", false, DataSourceUpdateMode.Never);
-            
-            ////1 cách khác để hiển thị giá trị của cbFoodCategory mà không dùng binding
-            //txbFoodID.TextChanged += delegate
-            //{
-
-            //    int id = (int)dtgvFood.SelectedCells[0].OwningRow.Cells["CategoryID"].Value;
-            //    foreach (var item in cbFoodCategory.Items)
-            //    {
-            //        if ((item as Category).ID == id)
-            //        {
-            //            cbFoodCategory.SelectedIndex = cbFoodCategory.Items.IndexOf(item);
-            //            //cbFoodCategory.SelectedItem = item;
-            //            break;
-            //        }
-            //    }
-
-            //};
         }      
 
         /// <summary>
@@ -532,17 +460,9 @@ namespace CanteenManager
         /// <param name="categorID"></param>
         /// <param name="price"></param>
         /// <returns></returns>
-        bool InsertFood(string name, int categoryID, double price)
-        {
-            
-            return FoodDAO.Instance.InsertFood(name, categoryID, price);
-        }
+        bool InsertFood(string name, int categoryID, double price) => FoodDAO.Instance.InsertFood(name, categoryID, price);
 
-        bool UpdateFood(int id, string name, int categoryID, double price, int foodStatus)
-        {
-
-            return FoodDAO.Instance.UpdateFood(id, name, categoryID, price, foodStatus);
-        }
+        bool UpdateFood(int id, string name, int categoryID, double price, int foodStatus) => FoodDAO.Instance.UpdateFood(id, name, categoryID, price, foodStatus);
 
         /// <summary>
         /// Tìm kiếm trong database (có thể bỏ qua phân biệt Unicode), trả về list kết quả.
@@ -550,10 +470,7 @@ namespace CanteenManager
         /// <param name="foodName"></param>
         /// <param name="option">True để bỏ qua phân biệt Unicode, ngược lại, False.</param>
         /// <returns></returns>
-        List<Food> SearchFood(string foodName, bool option = true)
-        {
-            return FoodDAO.Instance.SearchFood(foodName, option);
-        }
+        List<Food> SearchFood(string foodName, bool option = true) => FoodDAO.Instance.SearchFood(foodName, option);
 
         /// <summary>
         /// Tìm kiếm ngay trên dtgvFood, highlight các kết quả.
@@ -562,10 +479,6 @@ namespace CanteenManager
         {
             //Bỏ chọn những cell đang được highlight
             dtgvFood.ClearSelection();
-            //foreach (DataGridViewCell item in dtgvFood.SelectedCells)
-            //{
-            //    item.Selected = false;
-            //}
 
             //Highlight và active những cell có chứa nội dung trong txbSearchFood
             var listHighlightCell = new List<DataGridViewCell>();
@@ -575,7 +488,6 @@ namespace CanteenManager
                 if (dtgvFood.Rows[i].Cells["Name"].Value.ToString().ToLower().Contains(foodName.ToLower()))
                 {
                     //Active cell có chứa nội dung trong txbSearchFood
-                    //thằng này mới select thật và binding được, thằng Selected chỉ highlight thôi
                     dtgvFood.CurrentCell = dtgvFood.Rows[i].Cells[1];
 
                     //Cho những cell này vào list để tí nữa highlight hết cả bọn
@@ -610,15 +522,9 @@ namespace CanteenManager
             cbCategoryStatus.DataBindings.Add("SelectedValue", dtgvCategory.DataSource, "CategoryStatus", false, DataSourceUpdateMode.Never);
         }
 
-        bool InsertCategory(string name)
-        {
-            return CategoryDAO.Instance.InsertCategory(name);
-        }
+        bool InsertCategory(string name) => CategoryDAO.Instance.InsertCategory(name);
 
-        bool UpdateCategory(int id, string name, int categoryStatus)
-        {
-            return CategoryDAO.Instance.UpdateCategory(id, name, categoryStatus);
-        }
+        bool UpdateCategory(int id, string name, int categoryStatus) => CategoryDAO.Instance.UpdateCategory(id, name, categoryStatus);
 
         void LoadReport(DateTime fromDate, DateTime toDate)
         {
@@ -642,14 +548,10 @@ namespace CanteenManager
 
         private void fAdmin_Load(object sender, EventArgs e)
         {
-            //Thời điểm form đã load xong,
-            //giờ mới hiển thị được 'new Font("Arial", 16, FontStyle.Bold)' cho dòng cuối(hiện tổng tiền) của dtgvBill
             if (ckbShowByPage.Checked)
                 LoadDataBillByDateAndPage(dtpkFromDate.Value, dtpkToDate.Value, (int)nmPageNumber.Value, (int)nmPageRow.Value);
             else
                 LoadDataBillByDate(dtpkFromDate.Value, dtpkToDate.Value);
-
-
         }
 
         private void btnViewBill_Click(object sender, EventArgs e)
@@ -732,10 +634,7 @@ namespace CanteenManager
 
         private void btnSearchFood_Click(object sender, EventArgs e)
         {
-            foodBindingSource.DataSource = SearchFood(txbSearchFood.Text, ckbSearch.Checked);
-            
-            //SearchFood(txbSearchFood.Text);
-            
+            foodBindingSource.DataSource = SearchFood(txbSearchFood.Text, ckbSearch.Checked);           
         }
 
         private void btnShowCategory_Click(object sender, EventArgs e)
@@ -905,7 +804,6 @@ namespace CanteenManager
 
             string userName = txbUserName.Text;
             string displayName = txbDisplayName.Text;
-            //int? accType = (AccountType)cbAccountType.SelectedValue == AccountType.Admin ? 1 : 0;
             int? accType = (int)cbAccountType.SelectedValue;
 
             if (LoginAdmin.UserName != "admin" && (accountBindingSource.Current as Account).AccType == AccountType.Staff && accType == 1)
@@ -996,15 +894,6 @@ namespace CanteenManager
             {
                 MessageBox.Show($"Đặt lại mật khẩu cho tài khoản [{userName}] thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                ////Nếu Admin đang đăng nhập tự reset chính mình
-                //if (txbUserName.Text == LoginAdmin.UserName)
-                //{
-                //    //Load lại
-                //    LoginAdmin = AccountDAO.Instance.Login(LoginAdmin.UserName, "0");
-
-                //    //publish event
-                //    adminChange?.Invoke(this, new EventArgs());
-                //}
             }
             else
             {

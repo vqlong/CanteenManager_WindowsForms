@@ -18,6 +18,7 @@ namespace CanteenManager.DAO
         public void InsertBillInfo(int billID, int foodID, int foodCount)
         {
             string query = "EXEC USP_InsertBillInfo @billID, @foodID, @foodCount";
+
             DataProvider.Instance.ExecuteNonQuery(query, new object[] { billID, foodID, foodCount });
         }
     }

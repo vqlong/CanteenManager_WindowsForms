@@ -11,11 +11,11 @@ namespace CanteenManager.DTO
     {
         public BillDetail(string foodName, string categoryName, int foodCount, float price, float totalPrice = 0)
         {
-            this.FoodName = foodName;
-            this.CategoryName = categoryName;
-            this.FoodCount = foodCount;
-            this.Price = price;
-            this.TotalPrice = totalPrice;
+            FoodName = foodName;
+            CategoryName = categoryName;
+            FoodCount = foodCount;
+            Price = price;
+            TotalPrice = totalPrice;
         }
 
         /// <summary>
@@ -24,12 +24,12 @@ namespace CanteenManager.DTO
         /// <param name="row"></param>
         public BillDetail(DataRow row)
         {
-            this.FoodName = row["FoodName"].ToString();
-            this.CategoryName = row["CategoryName"].ToString();
-            this.FoodCount = (int)row["FoodCount"];
+            FoodName = row["FoodName"].ToString();
+            CategoryName = row["CategoryName"].ToString();
+            FoodCount = (int)row["FoodCount"];
             //Kiểu float trong C# phải có hậu tố "f" mà trong SQL thì không => ép về double luôn cho đỡ lằng nhằng
-            this.Price = (double)row["Price"];
-            this.TotalPrice = (double)row["TotalPrice"];
+            Price = (double)row["Price"];
+            TotalPrice = (double)row["TotalPrice"];
         }
 
         private string foodName;

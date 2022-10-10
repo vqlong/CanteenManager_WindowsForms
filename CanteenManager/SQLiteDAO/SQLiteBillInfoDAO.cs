@@ -4,10 +4,6 @@ namespace CanteenManager.DAO
 {
     public class SQLiteBillInfoDAO : IBillInfoDAO
     {
-        //private static readonly SQLiteBillInfoDAO instance = new SQLiteBillInfoDAO();
-
-        //public static SQLiteBillInfoDAO Instance => instance;
-
         private SQLiteBillInfoDAO() { }
 
         public void InsertBillInfo(int billID, int foodID, int foodCount)

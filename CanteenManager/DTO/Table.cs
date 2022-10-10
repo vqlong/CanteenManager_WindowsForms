@@ -11,10 +11,10 @@ namespace CanteenManager.DTO
 
         public Table(int id, string name, string status, UsingState usingState)
         {
-            this.ID = id;
-            this.Name = name;
-            this.Status = status;
-            this.UsingState = usingState;
+            ID = id;
+            Name = name;
+            Status = status;
+            UsingState = usingState;
         }
 
         /// <summary>
@@ -23,10 +23,10 @@ namespace CanteenManager.DTO
         /// <param name="row"></param>
         public Table(DataRow row)
         {
-            this.ID = Convert.ToInt32(row["ID"]);
-            this.Name = row["Name"].ToString();
-            this.Status = row["TableStatus"].ToString();
-            this.UsingState = (UsingState)row["UsingState"];
+            ID = Convert.ToInt32(row["ID"]);
+            Name = row["Name"].ToString();
+            Status = row["TableStatus"].ToString();
+            UsingState = (UsingState)row["UsingState"];
         }
 
         private int iD;

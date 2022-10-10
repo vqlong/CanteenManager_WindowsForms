@@ -8,10 +8,6 @@ namespace CanteenManager.DAO
     {
         private SQLiteFoodDAO() { }
 
-        //private static readonly SQLiteFoodDAO instance = new SQLiteFoodDAO();
-
-        //public static SQLiteFoodDAO Instance => instance;
-
         /// <summary>
         /// Lấy danh sách các Food dựa theo 1 CategoryID.
         /// </summary>
@@ -109,19 +105,6 @@ namespace CanteenManager.DAO
 
             return listFood;
 
-            ////Tìm kiếm bình thường
-            //string query = $"SELECT * FROM Food WHERE tolower(Name) LIKE '%{foodName.ToLower().Trim()}%' ORDER BY CategoryID ASC";
-
-            //DataTable data = DataProvider.Instance.ExecuteQuery(query);
-
-            //foreach (DataRow row in data.Rows)
-            //{
-            //    Food food = new Food(row);
-
-            //    listFood.Add(food);
-            //}
-
-            //return listFood;
         }
 
         /// <summary>
@@ -163,20 +146,20 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Chuyển chuỗi sang dạng không dấu.
         /// </summary>
-        /// <param name="strInput"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        public string ConvertToUnsigned(string strInput)
+        public string ConvertToUnsigned(string input)
         {
-            string   signedStr = "ăâđêôơưàảãạáằẳẵặắầẩẫậấèẻẽẹéềểễệế ìỉĩịíòỏõọóồổỗộốờởỡợớùủũụúừửữựứỳỷỹỵý ĂÂĐÊÔƠƯÀẢÃẠÁẰẲẴẶẮẦẨẪẬẤÈẺẼẸÉỀỂỄỆẾÌỈĨỊÍ ÒỎÕỌÓỒỔỖỘỐỜỞỠỢỚÙỦŨỤÚỪỬỮỰỨỲỶỸỴÝ";
-            string unsignedStr = "aadeoouaaaaaaaaaaaaaaaeeeeeeeeee iiiiiooooooooooooooouuuuuuuuuuyyyyy AADEOOUAAAAAAAAAAAAAAAEEEEEEEEEEIIIII OOOOOOOOOOOOOOOUUUUUUUUUUYYYYY";
+            string   signed = "ăâđêôơưàảãạáằẳẵặắầẩẫậấèẻẽẹéềểễệế ìỉĩịíòỏõọóồổỗộốờởỡợớùủũụúừửữựứỳỷỹỵý ĂÂĐÊÔƠƯÀẢÃẠÁẰẲẴẶẮẦẨẪẬẤÈẺẼẸÉỀỂỄỆẾÌỈĨỊÍ ÒỎÕỌÓỒỔỖỘỐỜỞỠỢỚÙỦŨỤÚỪỬỮỰỨỲỶỸỴÝ";
+            string unsigned = "aadeoouaaaaaaaaaaaaaaaeeeeeeeeee iiiiiooooooooooooooouuuuuuuuuuyyyyy AADEOOUAAAAAAAAAAAAAAAEEEEEEEEEEIIIII OOOOOOOOOOOOOOOUUUUUUUUUUYYYYY";
 
-            for (int i = 0; i < strInput.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
-                if (signedStr.Contains(strInput[i]))
-                    strInput = strInput.Replace(strInput[i], unsignedStr[signedStr.IndexOf(strInput[i])]);
+                if (signed.Contains(input[i]))
+                    input = input.Replace(input[i], unsigned[signed.IndexOf(input[i])]);
             }
 
-            return strInput;
+            return input;
         }
     }
 }
