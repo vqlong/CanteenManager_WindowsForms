@@ -177,9 +177,10 @@ namespace CanteenManager.DAO
         /// <returns></returns>
         public DataTable GetRevenueByMonth(DateTime fromDate, DateTime toDate)
         {
+            
             string query = @$"WITH temp AS
 	                             (
-		                    SELECT *, strftime('%m-%Y', DateCheckOut) AS [Month] 
+		                    SELECT *, strftime('%m-%Y', DateCheckOut) AS [Month]
 		                      FROM Bill 
 		                     WHERE BillStatus = 1 
                                AND strftime('%s', [DateCheckIn]) >= strftime('%s', '{fromDate.ToString("o")}') 
@@ -189,7 +190,7 @@ namespace CanteenManager.DAO
                               FROM temp 
                           GROUP BY temp.Month;";
 
-            return DataProvider.Instance.ExecuteQuery(query, new object[] { fromDate, toDate });
+            return DataProvider.Instance.ExecuteQuery(query);
         }
     }
 }

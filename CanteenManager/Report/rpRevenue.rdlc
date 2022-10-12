@@ -53,10 +53,14 @@
           <DataField>Revenue</DataField>
           <rd:TypeName>System.Double</rd:TypeName>
         </Field>
+        <Field Name="FirstDayInMonth">
+          <DataField>FirstDayInMonth</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>dsRevenue</rd:DataSetName>
-        <rd:SchemaPath>J:\My Giao Trinh\C#\Visual Studio 2022\Cafe\QuanLyCanteen\QuanLyCanteen\DataSet\dsRevenue.xsd</rd:SchemaPath>
+        <rd:SchemaPath>J:\My Giao Trinh\C#\Visual Studio 2022\App\Cafe_github\CanteenManager\CanteenManager\DataSet\dsRevenue.xsd</rd:SchemaPath>
         <rd:TableName>RevenueByMonth</rd:TableName>
         <rd:TableAdapterFillMethod />
         <rd:TableAdapterGetDataMethod />
@@ -81,7 +85,7 @@
                       </Group>
                       <SortExpressions>
                         <SortExpression>
-                          <Value>=Fields!Month.Value</Value>
+                          <Value>=Fields!FirstDayInMonth.Value</Value>
                         </SortExpression>
                       </SortExpressions>
                       <Label>=Fields!Month.Value</Label>

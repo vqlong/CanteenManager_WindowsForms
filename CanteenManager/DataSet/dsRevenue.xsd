@@ -21,11 +21,12 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="RevenueByMonth" msprop:Generator_RowClassName="RevenueByMonthRow" msprop:Generator_RowEvHandlerName="RevenueByMonthRowChangeEventHandler" msprop:Generator_RowDeletedName="RevenueByMonthRowDeleted" msprop:Generator_RowDeletingName="RevenueByMonthRowDeleting" msprop:Generator_RowEvArgName="RevenueByMonthRowChangeEvent" msprop:Generator_TablePropName="RevenueByMonth" msprop:Generator_RowChangedName="RevenueByMonthRowChanged" msprop:Generator_UserTableName="RevenueByMonth" msprop:Generator_RowChangingName="RevenueByMonthRowChanging" msprop:Generator_TableClassName="RevenueByMonthDataTable" msprop:Generator_TableVarName="tableRevenueByMonth">
+        <xs:element name="RevenueByMonth" msprop:Generator_RowEvHandlerName="RevenueByMonthRowChangeEventHandler" msprop:Generator_RowDeletedName="RevenueByMonthRowDeleted" msprop:Generator_RowDeletingName="RevenueByMonthRowDeleting" msprop:Generator_RowEvArgName="RevenueByMonthRowChangeEvent" msprop:Generator_TablePropName="RevenueByMonth" msprop:Generator_RowChangedName="RevenueByMonthRowChanged" msprop:Generator_UserTableName="RevenueByMonth" msprop:Generator_RowChangingName="RevenueByMonthRowChanging" msprop:Generator_RowClassName="RevenueByMonthRow" msprop:Generator_TableClassName="RevenueByMonthDataTable" msprop:Generator_TableVarName="tableRevenueByMonth">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="Month" msprop:Generator_UserColumnName="Month" msprop:Generator_ColumnPropNameInTable="MonthColumn" msprop:Generator_ColumnPropNameInRow="Month" msprop:Generator_ColumnVarNameInTable="columnMonth" type="xs:string" minOccurs="0" />
-              <xs:element name="Revenue" msprop:Generator_UserColumnName="Revenue" msprop:Generator_ColumnPropNameInTable="RevenueColumn" msprop:Generator_ColumnPropNameInRow="Revenue" msprop:Generator_ColumnVarNameInTable="columnRevenue" type="xs:double" minOccurs="0" />
+              <xs:element name="Month" msprop:Generator_ColumnPropNameInTable="MonthColumn" msprop:Generator_ColumnPropNameInRow="Month" msprop:Generator_UserColumnName="Month" msprop:Generator_ColumnVarNameInTable="columnMonth" type="xs:string" minOccurs="0" />
+              <xs:element name="Revenue" msprop:Generator_ColumnPropNameInTable="RevenueColumn" msprop:Generator_ColumnPropNameInRow="Revenue" msprop:Generator_UserColumnName="Revenue" msprop:Generator_ColumnVarNameInTable="columnRevenue" type="xs:double" minOccurs="0" />
+              <xs:element name="FirstDayInMonth" msprop:Generator_ColumnPropNameInRow="FirstDayInMonth" msprop:Generator_ColumnPropNameInTable="FirstDayInMonthColumn" msprop:Generator_ColumnVarNameInTable="columnFirstDayInMonth" msprop:Generator_UserColumnName="FirstDayInMonth" type="xs:dateTime" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

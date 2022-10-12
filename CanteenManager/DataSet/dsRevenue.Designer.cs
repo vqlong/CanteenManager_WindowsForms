@@ -593,6 +593,8 @@ namespace CanteenManager.DataSet {
             
             private global::System.Data.DataColumn columnRevenue;
             
+            private global::System.Data.DataColumn columnFirstDayInMonth;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public RevenueByMonthDataTable() {
@@ -644,6 +646,14 @@ namespace CanteenManager.DataSet {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public global::System.Data.DataColumn FirstDayInMonthColumn {
+                get {
+                    return this.columnFirstDayInMonth;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -679,11 +689,12 @@ namespace CanteenManager.DataSet {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
-            public RevenueByMonthRow AddRevenueByMonthRow(string Month, double Revenue) {
+            public RevenueByMonthRow AddRevenueByMonthRow(string Month, double Revenue, System.DateTime FirstDayInMonth) {
                 RevenueByMonthRow rowRevenueByMonthRow = ((RevenueByMonthRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Month,
-                        Revenue};
+                        Revenue,
+                        FirstDayInMonth};
                 rowRevenueByMonthRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowRevenueByMonthRow);
                 return rowRevenueByMonthRow;
@@ -708,6 +719,7 @@ namespace CanteenManager.DataSet {
             internal void InitVars() {
                 this.columnMonth = base.Columns["Month"];
                 this.columnRevenue = base.Columns["Revenue"];
+                this.columnFirstDayInMonth = base.Columns["FirstDayInMonth"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -717,6 +729,8 @@ namespace CanteenManager.DataSet {
                 base.Columns.Add(this.columnMonth);
                 this.columnRevenue = new global::System.Data.DataColumn("Revenue", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnRevenue);
+                this.columnFirstDayInMonth = new global::System.Data.DataColumn("FirstDayInMonth", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnFirstDayInMonth);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -990,6 +1004,22 @@ namespace CanteenManager.DataSet {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public System.DateTime FirstDayInMonth {
+                get {
+                    try {
+                        return ((global::System.DateTime)(this[this.tableRevenueByMonth.FirstDayInMonthColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'FirstDayInMonth\' in table \'RevenueByMonth\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableRevenueByMonth.FirstDayInMonthColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public bool IsMonthNull() {
                 return this.IsNull(this.tableRevenueByMonth.MonthColumn);
             }
@@ -1010,6 +1040,18 @@ namespace CanteenManager.DataSet {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
             public void SetRevenueNull() {
                 this[this.tableRevenueByMonth.RevenueColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public bool IsFirstDayInMonthNull() {
+                return this.IsNull(this.tableRevenueByMonth.FirstDayInMonthColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")]
+            public void SetFirstDayInMonthNull() {
+                this[this.tableRevenueByMonth.FirstDayInMonthColumn] = global::System.Convert.DBNull;
             }
         }
         
