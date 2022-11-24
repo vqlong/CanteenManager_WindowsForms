@@ -24,7 +24,7 @@ namespace CanteenManager
 
         void LoadBill(int billID)
         {
-            dtgvShowBill.DataSource = BillDetailDAO.Instance.GetListBillDetailByBillID(billID);
+            dtgvShowBill.DataSource = BillDetailDAO.Instance.GetListBillDetailByBillId(billID);
             dtgvShowBill.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dtgvShowBill.EditMode = DataGridViewEditMode.EditProgrammatically;
 

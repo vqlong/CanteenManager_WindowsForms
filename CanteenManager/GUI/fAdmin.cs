@@ -1,11 +1,10 @@
 ﻿using System.Data;
+using CanteenManager.DAO;
+using Microsoft.Reporting.WinForms;
+using Models;
 
 namespace CanteenManager
 {
-    using DAO;
-    using Microsoft.Reporting.WinForms;
-    using CanteenManager.DTO;
-
     /// <summary>
     /// Form quản lý của Admin.
     /// </summary>
@@ -31,6 +30,8 @@ namespace CanteenManager
             get => loginAdmin;
             set => loginAdmin = value;
         }
+
+        BindingSource billBindingSource = new BindingSource();
 
         /// <summary>
         /// Chứa data cho dtgvFood.
@@ -117,7 +118,8 @@ namespace CanteenManager
         /// </summary>
         void LoadData()
         {
-            
+            dtgvBill.DataSource = billBindingSource;
+
             //Tạo 1 danh sách về tình trạng sử dụng để làm data cho các ComboBox
             var listState = new List<Tuple<string, UsingState>>()
             {
@@ -145,12 +147,15 @@ namespace CanteenManager
             dtgvFood.Columns[2].HeaderText = "Danh mục";
             dtgvFood.Columns[3].HeaderText = "Giá";
             dtgvFood.Columns[4].HeaderText = "Trạng thái";
+            dtgvFood.Columns[5].Visible = false;
+            dtgvFood.Columns[6].Visible = false;
 
             dtgvFood.Columns[0].FillWeight = 40;
             dtgvFood.Columns[1].FillWeight = 160;
 
             //Tab danh mục
             dtgvCategory.DataSource = categoryBindingSource;
+            dtgvCategory.AllowUserToAddRows = false;
             dtgvCategory.EditMode = DataGridViewEditMode.EditProgrammatically;
             dtgvCategory.AllowUserToResizeRows = false;
 
@@ -163,6 +168,7 @@ namespace CanteenManager
             dtgvCategory.Columns[0].HeaderText = "ID";
             dtgvCategory.Columns[1].HeaderText = "Tên danh mục";
             dtgvCategory.Columns[2].HeaderText = "Trạng thái";
+            dtgvCategory.Columns[3].Visible = false;
 
             //Tab tài khoản
             dtgvAccount.DataSource = accountBindingSource;
@@ -203,6 +209,7 @@ namespace CanteenManager
             dtgvTable.Columns[1].HeaderText = "Tên bàn";
             dtgvTable.Columns[2].HeaderText = "Tình trạng";
             dtgvTable.Columns[3].HeaderText = "Trạng thái";
+            dtgvTable.Columns[4].Visible = false;
 
             //Tab doanh thu
             //Từ đầu giờ sáng ngày 1, 12:00:00 AM của tháng hiện tại
@@ -293,15 +300,15 @@ namespace CanteenManager
 
         void LoadAccountBinding()
         {
-            txbUserName.DataBindings.Add("Text", dtgvAccount.DataSource, "UserName", false, DataSourceUpdateMode.Never);
+            txbUserName.DataBindings.Add("Text", dtgvAccount.DataSource, "Username", false, DataSourceUpdateMode.Never);
             txbDisplayName.DataBindings.Add("Text", dtgvAccount.DataSource, "DisplayName", false, DataSourceUpdateMode.Never);
-            cbAccountType.DataBindings.Add("SelectedValue", dtgvAccount.DataSource, "AccType", false, DataSourceUpdateMode.Never);
+            cbAccountType.DataBindings.Add("SelectedValue", dtgvAccount.DataSource, "Type", false, DataSourceUpdateMode.Never);
         }
 
         [Obsolete("Hàm này không dùng nữa", false)]
         bool InsertAccount() => true;
 
-        bool UpdateAccount(string userName, string displayName, string passWord, int? accType) => AccountDAO.Instance.Update(userName, displayName, passWord, accType);
+        (bool, bool, bool) UpdateAccount(string username, string displayname, string password, int? type) => AccountDAO.Instance.Update(username, displayname, password, type);
 
         bool DeleteAccount(string userName) => AccountDAO.Instance.DeleteAccount(userName);
 
@@ -313,7 +320,7 @@ namespace CanteenManager
         void LoadTableBinding()
         {
             txbTableName.DataBindings.Add("Text", dtgvTable.DataSource, "Name", false, DataSourceUpdateMode.Never);
-            txbTableID.DataBindings.Add("Text", dtgvTable.DataSource, "ID", false, DataSourceUpdateMode.Never);
+            txbTableID.DataBindings.Add("Text", dtgvTable.DataSource, "Id", false, DataSourceUpdateMode.Never);
             cbTableUsingState.DataBindings.Add("SelectedValue", dtgvTable.DataSource, "UsingState", false, DataSourceUpdateMode.Never);
             txbTableStatus.DataBindings.Add("Text", dtgvTable.DataSource, "Status", false, DataSourceUpdateMode.Never);
         }
@@ -329,53 +336,11 @@ namespace CanteenManager
         /// <param name="toDate">Tới ngày này.</param>
         void LoadDataBillByDate(DateTime fromDate, DateTime toDate)
         {
-            dtgvBill.DataSource = BillDAO.Instance.GetDataBillByDate(fromDate, toDate);
+            billBindingSource.DataSource = BillDAO.Instance.GetDataBillByDate(fromDate, toDate);
 
-            //Trải đều, căn giữa
-            dtgvBill.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dtgvBill.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dtgvBill.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;           
-            dtgvBill.RowHeadersVisible = false;
-            dtgvBill.AllowUserToAddRows = false;
-            dtgvBill.AllowUserToResizeRows = false;
-            dtgvBill.AllowUserToResizeColumns = false;
-            dtgvBill.EditMode = DataGridViewEditMode.EditProgrammatically;
-
-            //Chỉnh độ rộng các cột
-            dtgvBill.Columns[0].Width = 40;
-            dtgvBill.Columns[3].Width = 120;
-            dtgvBill.Columns[4].Width = 120;
-
-            //Chỉnh tiêu đề của 3 cột này cho nó vào chính giữa
-            dtgvBill.Columns[3].HeaderCell.Style.Padding = new Padding(15, 0, 0, 0);
-            dtgvBill.Columns[4].HeaderCell.Style.Padding = new Padding(10, 0, 0, 0);
-
-            //Hiển thị tiền theo kiểu Việt Nam
-            dtgvBill.Columns[5].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("vi-vn");
-            dtgvBill.Columns[5].DefaultCellStyle.Format = "c0";
-
-            DataTable data = dtgvBill.DataSource as DataTable;
-
-            if (data.Rows.Count <= 0)
-            {
-                return;
-            }
-
-            //Cộng tổng tiền các hoá đơn hiện ra trên dtgvBill
-            double totalPrice = 0;
-            foreach (DataRow row in data.Rows)
-            {
-                totalPrice += (double)row[5];
-            }
-            data.Rows.Add();
-            //Chèn thêm hàng để hiện tổng tiền
-            data.Rows.Add(new object[] { null, null, null, "Tổng tiền:", null, totalPrice });           
-           
-            dtgvBill.DataSource = data;
-            //Phóng to, bôi đậm
-            dtgvBill.Rows[dtgvBill.Rows.Count - 1].Height = 30;
-            dtgvBill.Rows[dtgvBill.Rows.Count - 1].Cells[3].Style.Font = new Font("Arial", 16, FontStyle.Bold);
-            dtgvBill.Rows[dtgvBill.Rows.Count - 1].Cells[5].Style.Font = new Font("Arial", 16, FontStyle.Bold);
+            lbTotal.Visible = false;
+            lbTotalPrice.Visible = false;
+            FormatBill();
         }
 
         /// <summary>
@@ -385,16 +350,18 @@ namespace CanteenManager
         /// <param name="toDate"></param>
         /// <param name="pageNumber">Page muốn lấy về.</param>
         /// <param name="pageRow">Số dòng 1 page.</param>
-        void LoadDataBillByDateAndPage(DateTime fromDate, DateTime toDate, int pageNumber = 1, int pageRow = 10)
+        void LoadDataBillByDateAndPage(DateTime fromDate, DateTime toDate, int pageNumber = 1, int pageRow = 12)
         {
-            dtgvBill.DataSource = BillDAO.Instance.GetDataBillByDateAndPage(fromDate, toDate, pageNumber, pageRow);
+            billBindingSource.DataSource = BillDAO.Instance.GetDataBillByDateAndPage(fromDate, toDate, pageNumber, pageRow);
 
-            DataTable data = dtgvBill.DataSource as DataTable;
+            lbTotal.Visible = true;
+            lbTotalPrice.Visible = true;
+            FormatBill();
+        }
 
-            if (data.Rows.Count <= 0)
-            {
-                return;
-            }
+        void FormatBill()
+        {
+            if (dtgvBill.RowCount <= 0) return;
 
             //Trải đều, căn giữa
             dtgvBill.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -415,25 +382,34 @@ namespace CanteenManager
             dtgvBill.Columns[3].HeaderCell.Style.Padding = new Padding(15, 0, 0, 0);
             dtgvBill.Columns[4].HeaderCell.Style.Padding = new Padding(10, 0, 0, 0);
 
+            dtgvBill.Columns[0].HeaderText = "Id";
+            dtgvBill.Columns[1].HeaderText = "Ngày phát sinh";
+            dtgvBill.Columns[2].HeaderText = "Ngày thanh toán";
+            dtgvBill.Columns[3].HeaderText = "Tên bàn";
+            dtgvBill.Columns[4].HeaderText = "Giảm giá (%)";
+            dtgvBill.Columns[5].HeaderText = "Tiền thanh toán (Vnđ)";
+
+            var font = new Font("Arial", 12, FontStyle.Bold);
+            dtgvBill.Columns[0].HeaderCell.Style.Font = font;
+            dtgvBill.Columns[1].HeaderCell.Style.Font = font;
+            dtgvBill.Columns[2].HeaderCell.Style.Font = font;
+            dtgvBill.Columns[3].HeaderCell.Style.Font = font;
+            dtgvBill.Columns[4].HeaderCell.Style.Font = font;
+            dtgvBill.Columns[5].HeaderCell.Style.Font = font;
+
             //Hiển thị tiền theo kiểu Việt Nam
-            dtgvBill.Columns[5].DefaultCellStyle.FormatProvider = new System.Globalization.CultureInfo("vi-vn");
-            dtgvBill.Columns[5].DefaultCellStyle.Format = "c0";            
+            var culture = new System.Globalization.CultureInfo("vi-vn");
+            dtgvBill.Columns[5].DefaultCellStyle.FormatProvider = culture;
+            dtgvBill.Columns[5].DefaultCellStyle.Format = "c0";
 
             //Cộng tổng tiền các hoá đơn hiện ra trên dtgvBill
             double totalPrice = 0;
-            foreach (DataRow row in data.Rows)
+            foreach (DataGridViewRow row in dtgvBill.Rows)
             {
-                totalPrice += (double)row[5];
+                totalPrice += (double)row.Cells[5].Value;
             }
-            data.Rows.Add();
-            //Chèn thêm hàng để hiện tổng tiền
-            data.Rows.Add(new object[] { null, null, null, "Tổng tiền:", null, totalPrice });
 
-            dtgvBill.DataSource = data;
-            //Phóng to, bôi đậm
-            dtgvBill.Rows[dtgvBill.Rows.Count - 1].Height = 30;
-            dtgvBill.Rows[dtgvBill.Rows.Count - 1].Cells[3].Style.Font = new Font("Arial", 16, FontStyle.Bold);
-            dtgvBill.Rows[dtgvBill.Rows.Count - 1].Cells[5].Style.Font = new Font("Arial", 16, FontStyle.Bold);
+            lbTotalPrice.Text = totalPrice.ToString("c0", culture);
         }
 
         /// <summary>
@@ -447,9 +423,9 @@ namespace CanteenManager
         void LoadFoodBinding()
         {
             txbFoodName.DataBindings.Add("Text", dtgvFood.DataSource, "Name", false, DataSourceUpdateMode.Never);
-            txbFoodID.DataBindings.Add("Text", dtgvFood.DataSource, "ID", false, DataSourceUpdateMode.Never);
+            txbFoodID.DataBindings.Add("Text", dtgvFood.DataSource, "Id", false, DataSourceUpdateMode.Never);
             nmFoodPrice.DataBindings.Add("Value", dtgvFood.DataSource, "Price", false, DataSourceUpdateMode.Never);
-            cbFoodCategory.DataBindings.Add("SelectedValue", dtgvFood.DataSource, "CategoryID", false, DataSourceUpdateMode.Never);
+            cbFoodCategory.DataBindings.Add("SelectedValue", dtgvFood.DataSource, "CategoryId", false, DataSourceUpdateMode.Never);
             cbFoodStatus.DataBindings.Add("SelectedValue", dtgvFood.DataSource, "FoodStatus", false, DataSourceUpdateMode.Never);
         }      
 
@@ -518,7 +494,7 @@ namespace CanteenManager
         void LoadCategoryBinding()
         {
             txbCategoryName.DataBindings.Add("Text", dtgvCategory.DataSource, "Name", false, DataSourceUpdateMode.Never);
-            txbCategoryID.DataBindings.Add("Text", dtgvCategory.DataSource, "ID", false, DataSourceUpdateMode.Never);
+            txbCategoryID.DataBindings.Add("Text", dtgvCategory.DataSource, "Id", false, DataSourceUpdateMode.Never);
             cbCategoryStatus.DataBindings.Add("SelectedValue", dtgvCategory.DataSource, "CategoryStatus", false, DataSourceUpdateMode.Never);
         }
 
@@ -528,10 +504,10 @@ namespace CanteenManager
 
         void LoadReport(DateTime fromDate, DateTime toDate)
         {
-            DataTable data = FoodDAO.Instance.GetRevenueByFoodAndDate(fromDate, toDate);
+            var data = FoodDAO.Instance.GetRevenueByFoodAndDate(fromDate, toDate);
             ReportDataSource rds = new ReportDataSource("dsRevenueByFoodAndDate", data);
 
-            DataTable data2 = BillDAO.Instance.GetRevenueByMonth(fromDate, toDate);
+            var data2 = BillDAO.Instance.GetRevenueByMonth(fromDate, toDate);
             ReportDataSource rds2 = new ReportDataSource("dsRevenueByMonth", data2);
 
             rpvRevenue.LocalReport.ReportEmbeddedResource = "CanteenManager.Report.rpRevenue.rdlc";
@@ -795,48 +771,49 @@ namespace CanteenManager
                 return;
             }
 
-            if ((accountBindingSource.Current as Account).AccType == AccountType.Admin && txbUserName.Text != LoginAdmin.UserName && LoginAdmin.UserName != "admin")
+            if ((accountBindingSource.Current as Account).Type == AccountType.Admin && txbUserName.Text != LoginAdmin.Username && LoginAdmin.Username != "admin")
             {
                 MessageBox.Show("Bạn không thể chỉnh sửa tài khoản Admin khác.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }           
 
-            string userName = txbUserName.Text;
-            string displayName = txbDisplayName.Text;
-            int? accType = (int)cbAccountType.SelectedValue;
+            string username = txbUserName.Text;
+            string displayname = txbDisplayName.Text;
+            int? type = (int)cbAccountType.SelectedValue;
 
-            if (LoginAdmin.UserName != "admin" && (accountBindingSource.Current as Account).AccType == AccountType.Staff && accType == 1)
+            if (LoginAdmin.Username != "admin" && (accountBindingSource.Current as Account).Type == AccountType.Staff && type == 1)
             {
                 MessageBox.Show("Bạn không được tạo thêm Admin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }
 
-            if (txbUserName.Text == "admin" && accType == 0)
+            if (txbUserName.Text == "admin" && type == 0)
             {
                 MessageBox.Show("Bạn phải làm quản lý, không cho làm nhân viên O.o", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }
 
-            if (UpdateAccount(userName, displayName, null, accType))
+            var result = UpdateAccount(username, displayname, null, type);
+            if (result.Item1 && result.Item3) 
             {
-                MessageBox.Show($"Cập nhật tài khoản [{userName}] thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Cập nhật tài khoản [{username}] thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 
                 LoadAccount();
 
                 //Nếu Admin đang đăng nhập tự sửa chính mình
-                if (txbUserName.Text == LoginAdmin.UserName)
+                if (txbUserName.Text == LoginAdmin.Username)
                 {
                     //Load lại loginAdmin
                     foreach (var item in accountBindingSource.List)
                     {
-                        if ((item as Account).UserName == loginAdmin.UserName) loginAdmin = (Account)item;                       
+                        if ((item as Account).Username == loginAdmin.Username) loginAdmin = (Account)item;                       
                     } 
 
                     //Nếu không còn là Admin nữa
-                    if (LoginAdmin.AccType != AccountType.Admin) tcAdmin.Enabled = false;
+                    if (LoginAdmin.Type != AccountType.Admin) tcAdmin.Enabled = false;
 
                     //publish event
                     adminChange?.Invoke(this, new EventArgs());
@@ -851,14 +828,14 @@ namespace CanteenManager
         private void btnDeleteAccount_Click(object sender, EventArgs e)
         {
             
-            if(txbUserName.Text == LoginAdmin.UserName)
+            if(txbUserName.Text == LoginAdmin.Username)
             {
                 MessageBox.Show("Bạn không thể xoá chính mình.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }
 
-            if((accountBindingSource.Current as Account).AccType == AccountType.Admin && LoginAdmin.UserName != "admin")
+            if((accountBindingSource.Current as Account).Type == AccountType.Admin && LoginAdmin.Username != "admin")
             {
                 MessageBox.Show("Bạn không thể xoá tài khoản Admin.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -881,18 +858,18 @@ namespace CanteenManager
 
         private void btnResetPassWord_Click(object sender, EventArgs e)
         {
-            if ((accountBindingSource.Current as Account).AccType == AccountType.Admin && txbUserName.Text != LoginAdmin.UserName && LoginAdmin.UserName != "admin")
+            if ((accountBindingSource.Current as Account).Type == AccountType.Admin && txbUserName.Text != LoginAdmin.Username && LoginAdmin.Username != "admin")
             {
                 MessageBox.Show("Bạn không thể chỉnh sửa tài khoản Admin khác.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }
 
-            string userName = txbUserName.Text;
+            string username = txbUserName.Text;
 
-            if (UpdateAccount(userName, null, "0", null))
+            if (UpdateAccount(username, null, "0", null).Item2)
             {
-                MessageBox.Show($"Đặt lại mật khẩu cho tài khoản [{userName}] thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Đặt lại mật khẩu cho tài khoản [{username}] thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }
             else

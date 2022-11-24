@@ -1,5 +1,5 @@
 ﻿using CanteenManager.DAO;
-using CanteenManager.DTO;
+using Models;
 using System.ComponentModel;
 
 namespace CanteenManager
@@ -38,7 +38,7 @@ namespace CanteenManager
         /// <param name="account"></param>
         void ShowAccount(Account account)
         {
-            txbUserName.Text = account.UserName;
+            txbUserName.Text = account.Username;
             txbDisplayName.Text = account.DisplayName;
         }
 
@@ -53,13 +53,14 @@ namespace CanteenManager
                 return;
             }
 
-            if (AccountDAO.Instance.Login(LoginAccount.UserName, txbPassWord.Text) != null) 
+            if (AccountDAO.Instance.Login(LoginAccount.Username, txbPassWord.Text) != null) 
             {
-                if (AccountDAO.Instance.Update(LoginAccount.UserName, txbDisplayName.Text, txbNewPassWord.Text))
+                var result = AccountDAO.Instance.Update(LoginAccount.Username, txbDisplayName.Text, txbNewPassWord.Text);
+                if (result.Item1 || result.Item2)
                 {
                     //Load lại tài khoản sau khi update
                     //Nếu không nhập mật khẩu mới thì lấy mật khẩu cũ truyền vào tham số, ngược lại thì truyền mật khẩu mới
-                    LoginAccount = AccountDAO.Instance.Login(LoginAccount.UserName, string.IsNullOrEmpty(txbNewPassWord.Text) ? txbPassWord.Text : txbNewPassWord.Text);
+                    LoginAccount = AccountDAO.Instance.Login(LoginAccount.Username, string.IsNullOrEmpty(txbNewPassWord.Text) ? txbPassWord.Text : txbNewPassWord.Text);
 
                     //this.Refresh();
 

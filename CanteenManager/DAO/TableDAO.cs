@@ -1,5 +1,5 @@
-﻿using CanteenManager.DTO;
-using CanteenManager.Interface;
+﻿using Interfaces;
+using Models;
 using System.Data;
 using Unity;
 
@@ -67,11 +67,11 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Tạo 1 đối tượng Table dựa vào ID.
         /// </summary>
-        /// <param name="tableID"></param>
+        /// <param name="tableId"></param>
         /// <returns></returns>
-        public Table GetTableByID(int tableID)
+        public Table GetTableById(int tableId)
         {
-            string query = "SELECT * FROM TableFood WHERE ID = " + tableID;
+            string query = "SELECT * FROM TableFood WHERE ID = " + tableId;
 
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
 
@@ -83,13 +83,13 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Chuyển bàn, bằng cách tráo đổi TableID của 2 Bill trên mỗi bàn.
         /// </summary>
-        /// <param name="firstTableID"></param>
-        /// <param name="secondTableID"></param>
-        public bool SwapTable(int firstTableID, int secondTableID)
+        /// <param name="firstTableId"></param>
+        /// <param name="secondTableId"></param>
+        public bool SwapTable(int firstTableId, int secondTableId)
         {
-            string query = "EXEC USP_SwapTable @firstTableID, @secondTableID";
+            string query = "EXEC USP_SwapTable @firstTableId, @secondTableId";
 
-            var result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { firstTableID, secondTableID });
+            var result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { firstTableId, secondTableId });
 
             if (result > 0) return true;
 
@@ -99,13 +99,13 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Gộp bàn, bằng cách chuyển các món ăn trên bàn này vào bàn kia.
         /// </summary>
-        /// <param name="firstTableID"></param>
-        /// <param name="secondTableID"></param>
-        public bool CombineTable(int firstTableID, int secondTableID)
+        /// <param name="firstTableId"></param>
+        /// <param name="secondTableId"></param>
+        public bool CombineTable(int firstTableId, int secondTableId)
         {
-            string query = "EXEC USP_CombineTable @firstTableID, @secondTableID";
+            string query = "EXEC USP_CombineTable @firstTableId, @secondTableId";
 
-            var result = (int)DataProvider.Instance.ExecuteScalar(query, new object[] { firstTableID, secondTableID });
+            var result = (int)DataProvider.Instance.ExecuteScalar(query, new object[] { firstTableId, secondTableId });
 
             if (result == 1) return true;
 
@@ -125,9 +125,9 @@ namespace CanteenManager.DAO
 
         public bool UpdateTable(int id, string name, int usingState)
         {
-            string query = $"UPDATE TableFood SET Name = N'{name}', UsingState = {usingState} WHERE ID = {id}";
+            string query = $"UPDATE TableFood SET Name = @name , UsingState = @usingState WHERE Id = @id";
 
-            int result = DataProvider.Instance.ExecuteNonQuery(query);
+            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { name, usingState, id });
 
             if (result == 1) return true;
 

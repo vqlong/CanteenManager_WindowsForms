@@ -1,23 +1,11 @@
 ﻿using Interfaces;
 using Models;
 using System.Data;
-using Unity;
 
-namespace CanteenManager.DAO
+namespace SQLiteDataAccess
 {
-    /// <summary>
-    /// Chứa các thao tác xử lý với FoodCategory.
-    /// </summary>
     public class CategoryDAO : ICategoryDAO
     {
-        private static ICategoryDAO instance;
-
-        public static ICategoryDAO Instance
-        {
-            get => instance ?? (instance = Config.Container.Resolve<ICategoryDAO>());
-            private set => instance = value;
-        }
-
         private CategoryDAO() { }
 
         /// <summary>
@@ -67,11 +55,11 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Tạo 1 đối tượng Category dựa vào ID.
         /// </summary>
-        /// <param name="categoryId"></param>
+        /// <param name="categoryID"></param>
         /// <returns></returns>
-        public Category GetCategoryById(int categoryId)
+        public Category GetCategoryById(int categoryID)
         {
-            string query = "SELECT * FROM FoodCategory WHERE Id = " + categoryId;
+            string query = "SELECT * FROM FoodCategory WHERE ID = " + categoryID;
 
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
 
@@ -82,7 +70,7 @@ namespace CanteenManager.DAO
 
         public bool InsertCategory(string name)
         {
-            string query = $"INSERT FoodCategory(Name) VALUES( @name )";
+            string query = $"INSERT INTO FoodCategory(Name) VALUES( @name )";
 
             int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] {name});
 
@@ -93,7 +81,7 @@ namespace CanteenManager.DAO
 
         public bool UpdateCategory(int id, string name, int categoryStatus)
         {
-            string query = $"UPDATE FoodCategory SET Name = @name , CategoryStatus = @categoryStatus WHERE ID = @id ";
+            string query = $"UPDATE FoodCategory SET Name = @name, CategoryStatus = @categoryStatus WHERE ID = @id ";
 
             int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { name, categoryStatus, id });
 

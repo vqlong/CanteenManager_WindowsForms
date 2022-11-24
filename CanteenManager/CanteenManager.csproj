@@ -20,10 +20,16 @@
 
   <ItemGroup>
     <PackageReference Include="ReportViewerCore.WinForms" Version="15.1.17" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.116" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="6.0.0" />
     <PackageReference Include="Unity" Version="5.11.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EntityDataAccess\EntityDataAccess.csproj" />
+    <ProjectReference Include="..\Help\Help.csproj" />
+    <ProjectReference Include="..\SQLiteDataAccess\SQLiteDataAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>

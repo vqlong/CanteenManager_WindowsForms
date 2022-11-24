@@ -1,5 +1,5 @@
-﻿using CanteenManager.DTO;
-using CanteenManager.Interface;
+﻿using Interfaces;
+using Models;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
@@ -30,10 +30,10 @@ namespace CanteenManager.DAO
         /// <returns>Trả về 1 tài khoản nếu đăng nhập và mật khẩu trùng khớp, ngược lại trả về null.</returns>
         public Account Login(string username, string password)
         {
-            string query = "EXEC USP_Login @UserName, @PassWord";
+            string query = "EXEC USP_Login @Username, @Password";
 
             //Chuyển passWord thành mảng byte
-            byte[] bytePassword = ASCIIEncoding.ASCII.GetBytes(password);
+            byte[] bytePassword = Encoding.ASCII.GetBytes(password);
 
             //Tạo hash
             byte[] sha256Password = SHA256.Create().ComputeHash(bytePassword);
@@ -55,19 +55,23 @@ namespace CanteenManager.DAO
         }
 
         /// <summary>
-        /// Update DisplayName và PassWord.
+        /// Update Account.
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="displayName"></param>
+        /// <param name="displayname"></param>
         /// <param name="password"></param>
-        /// <returns>true, nếu update thành công, ngược lại, false.</returns>
-        public bool Update(string username, string displayName = null, string password = null, int? accType = null)
+        /// <returns>
+        /// Item1 - Kết quả cập nhật DisplayName.
+        /// <br>Item2 - Kết quả cập nhật Password.</br>
+        /// <br>Item3 - Kết quả cập nhật Type.</br>
+        /// </returns>
+        public (bool, bool, bool) Update(string username, string displayname = null, string password = null, int? type = null)
         {
-            string query = "EXEC USP_UpdateAccount @userName, @displayName, @passWord, @accType";
+            string query = "EXEC USP_UpdateAccount @username, @displayname, @password, @type";
 
             if (!string.IsNullOrEmpty(password))
             {
-                byte[] bytePassword = ASCIIEncoding.ASCII.GetBytes(password);
+                byte[] bytePassword = Encoding.ASCII.GetBytes(password);
 
                 byte[] sha256Password = SHA256.Create().ComputeHash(bytePassword);
 
@@ -78,25 +82,22 @@ namespace CanteenManager.DAO
                 }
             }
 
-            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { username, displayName, password, accType });
+            var result = DataProvider.Instance.ExecuteQuery(query, new object[] { username, displayname, password, type });
 
-            //result = 0: không update được cái nào
-            //result = 1: chỉ update được DisplayName hoặc PassWord hoặc AccType
-            //result = 2: update được 2 cái
-            //result = 3: update được cả DisplayName và PassWord và AccType
-            if (result > 0)
-            {
-                return true;
-            }
 
-            return false;
+            bool item1 = false, item2 = false, item3 = false;
+            if ((int)result.Rows[0]["ResultDisplayName"] == 1) item1 = true;
+            if ((int)result.Rows[0]["ResultPassword"] == 1) item2 = true;
+            if ((int)result.Rows[0]["ResultType"] == 1) item3 = true;
+
+            return (item1, item2, item3);
         }
 
-        public bool InsertAccount(string userName)
+        public bool InsertAccount(string username)
         {
-            string query = $"SELECT COUNT(*) FROM Account WHERE UserName = N'{userName}'";
+            string query = $"SELECT COUNT(*) FROM Account WHERE Username = @username";
 
-            int result = (int)DataProvider.Instance.ExecuteScalar(query);
+            int result = (int)DataProvider.Instance.ExecuteScalar(query, new object[] {username});
 
             if (result > 0)
             {
@@ -105,20 +106,20 @@ namespace CanteenManager.DAO
                 return false;
             }
 
-            query = $"INSERT Account(UserName) VALUES(N'{userName}')";
+            query = $"INSERT Account(Username) VALUES( @username )";
 
-            result = DataProvider.Instance.ExecuteNonQuery(query);
+            result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { username });
 
             if (result == 1) return true;
 
             return false;
         }
 
-        public bool DeleteAccount(string userName)
+        public bool DeleteAccount(string username)
         {
-            string query = $"DELETE Account WHERE UserName = N'{userName}'";
+            string query = $"DELETE Account WHERE Username = @username";
 
-            int result = DataProvider.Instance.ExecuteNonQuery(query);
+            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { username });
 
             if (result == 1) return true;
 

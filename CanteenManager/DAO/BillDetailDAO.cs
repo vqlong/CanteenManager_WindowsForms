@@ -1,5 +1,5 @@
-﻿using CanteenManager.DTO;
-using CanteenManager.Interface;
+﻿using Interfaces;
+using Models;
 using System.Data;
 using System.Drawing.Printing;
 using Unity;
@@ -25,15 +25,15 @@ namespace CanteenManager.DAO
         /// Lấy danh sách BillDetail dựa vào TableID của Bill.
         /// <br>Bill này phải là Bill chưa thanh toán (BillStatus = 0).</br>
         /// </summary>
-        /// <param name="tableID">TableID của Bill.</param>
+        /// <param name="tableId">TableID của Bill.</param>
         /// <returns></returns>
-        public List<BillDetail> GetListBillDetailByTableID(int tableID)
-        {
-            List<BillDetail> listBillDetail = new List<BillDetail>();
-
-            string query = "select Food.Name as FoodName, FoodCategory.Name as CategoryName, BillInfo.FoodCount as FoodCount, Food.Price as Price, FoodCount*Price as TotalPrice from Bill, BillInfo, Food, FoodCategory where BillInfo.BillID = Bill.ID and BillInfo.FoodID = Food.ID and Food.CategoryID = FoodCategory.ID and Bill.BillStatus = 0 and Bill.TableID = " + tableID;
+        public List<BillDetail> GetListBillDetailByTableId(int tableId)
+        {          
+            string query = "select Food.Name as FoodName, FoodCategory.Name as CategoryName, BillInfo.FoodCount as FoodCount, Food.Price as Price, FoodCount*Price as TotalPrice from Bill, BillInfo, Food, FoodCategory where BillInfo.BillId = Bill.Id and BillInfo.FoodId = Food.Id and Food.CategoryId = FoodCategory.Id and Bill.BillStatus = 0 and Bill.TableId = " + tableId;
 
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
+
+            List<BillDetail> listBillDetail = new List<BillDetail>(data.Rows.Count);
 
             foreach (DataRow row in data.Rows)
             {
@@ -48,15 +48,15 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Lấy danh sách BillDetail dựa vào ID của Bill.
         /// </summary>
-        /// <param name="billID"></param>
+        /// <param name="billId"></param>
         /// <returns></returns>
-        public List<BillDetail> GetListBillDetailByBillID(int billID)
-        {
-            List<BillDetail> listBillDetail = new List<BillDetail>();
-
-            string query = "select Food.Name as FoodName, FoodCategory.Name as CategoryName, BillInfo.FoodCount as FoodCount, Food.Price as Price, FoodCount*Price as TotalPrice from BillInfo, Food, FoodCategory where BillInfo.FoodID = Food.ID and Food.CategoryID = FoodCategory.ID and BillInfo.BillID = " + billID;
+        public List<BillDetail> GetListBillDetailByBillId(int billId)
+        {           
+            string query = "select Food.Name as FoodName, FoodCategory.Name as CategoryName, BillInfo.FoodCount as FoodCount, Food.Price as Price, FoodCount*Price as TotalPrice from BillInfo, Food, FoodCategory where BillInfo.FoodId = Food.Id and Food.CategoryId = FoodCategory.Id and BillInfo.BillId = " + billId;
 
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
+
+            List<BillDetail> listBillDetail = new List<BillDetail>(data.Rows.Count);
 
             foreach (DataRow row in data.Rows)
             {
@@ -91,17 +91,17 @@ namespace CanteenManager.DAO
         /// <summary>
         /// ID của Bill sắp in từ hàm PrintListBillDetailByBillID(int billID).
         /// </summary>
-        private int printBillID;
+        private int printBillId;
 
         /// <summary>
         /// In ra máy in danh sách BillDetail dựa vào ID của 1 Bill.
         /// </summary>
-        /// <param name="tableID"></param>
-        public void PrintListBillDetailByBillID(int billID)
+        /// <param name="billId"></param>
+        public void PrintListBillDetailByBillId(int billId)
         {
-            printList = GetListBillDetailByBillID(billID);
+            printList = GetListBillDetailByBillId(billId);
 
-            printBillID = billID;
+            printBillId = billId;
 
             content = "";
             page = 0;
@@ -116,7 +116,7 @@ namespace CanteenManager.DAO
             {
                 printDocument.PrinterSettings.PrinterName = printDialog.PrinterSettings.PrinterName;
                 printDocument.DefaultPageSettings.PaperSize = printDialog.PrinterSettings.DefaultPageSettings.PaperSize;  //Phải chọn PaperSize A6 để in ra cân đối
-                printDocument.DocumentName = $"BillID_{billID}_" + DateTime.Now.ToString("ddMMyyy_hhmmss_tt");
+                printDocument.DocumentName = $"BillID_{billId}_" + DateTime.Now.ToString("ddMMyyy_hhmmss_tt");
                 printDocument.Print();
             }
         }
@@ -137,8 +137,8 @@ namespace CanteenManager.DAO
             content = "**HOÁ ĐƠN THANH TOÁN**";
             e.Graphics.DrawString(content, fontBold, Brushes.Green, new Rectangle(new Point(0, 50), e.PageBounds.Size), formatCenter);
 
-            Bill bill = BillDAO.Instance.GetBillByID(printBillID);
-            content = $"Ngày:\t\t\t\t\t\t\t\t\t\t\t\t {DateTime.Now.ToString("G")}\nID hoá đơn:\t {printBillID}\nID bàn:\t\t\t\t\t\t\t\t\t {bill.TableID}";
+            Bill bill = BillDAO.Instance.GetBillById(printBillId);
+            content = $"Ngày:\t\t\t\t\t\t\t\t\t\t\t\t {DateTime.Now.ToString("G")}\nID hoá đơn:\t {printBillId}\nID bàn:\t\t\t\t\t\t\t\t\t {bill.TableId}";
             e.Graphics.DrawString(content, fontRegular, Brushes.Green, 35, 110, formatNear);
 
             content = "-------------------------------------------------------------";

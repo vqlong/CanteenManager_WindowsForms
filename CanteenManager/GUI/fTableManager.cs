@@ -1,5 +1,6 @@
 ﻿using CanteenManager.DAO;
-using CanteenManager.DTO;
+using Help;
+using Models;
 using System.Drawing.Printing;
 using System.Text.RegularExpressions;
 
@@ -28,7 +29,7 @@ namespace CanteenManager
         public Account LoginAccount
         {
             get => loginAccount;
-            set { loginAccount = value; ChangeAccount(loginAccount.AccType); }
+            set { loginAccount = value; ChangeAccount(loginAccount.Type); }
         }
 
         int tableHeight = 90;
@@ -96,10 +97,10 @@ namespace CanteenManager
                 return;
             }
 
-            int tableID = (button.Tag as Table).ID;
+            int tableID = (button.Tag as Table).Id;
 
             //Gán lại 1 đối tượng table mới cho button.
-            Table table = TableDAO.Instance.GetTableByID(tableID);
+            Table table = TableDAO.Instance.GetTableById(tableID);
 
             button.Tag = table;
 
@@ -134,7 +135,7 @@ namespace CanteenManager
         /// <param name="tableID">ID của bàn (TableID của Bill).</param>
         void ShowBillByTableID(int tableID)
         {
-            List<BillDetail> listBillDetail = BillDetailDAO.Instance.GetListBillDetailByTableID(tableID);
+            List<BillDetail> listBillDetail = BillDetailDAO.Instance.GetListBillDetailByTableId(tableID);
 
             //Biến cộng tổng giá tiền của các món.
             double billTotalPrice = 0;
@@ -210,7 +211,7 @@ namespace CanteenManager
         /// <param name="categoryID"></param>
         void LoadListFoodByCategoryID(int categoryID)
         {
-            List<Food> listFood = FoodDAO.Instance.GetListFoodByCategoryID(categoryID);
+            List<Food> listFood = FoodDAO.Instance.GetListFoodByCategoryId(categoryID);
 
             cbFood.Text = "";
             cbFood.DataSource = listFood;
@@ -229,13 +230,13 @@ namespace CanteenManager
             
             Category category = comboBox.SelectedItem as Category;
             
-            LoadListFoodByCategoryID(category.ID);
+            LoadListFoodByCategoryID(category.Id);
         }
 
         private void Button_Click(object? sender, EventArgs e)
         {
             //Ép kiểu object của sender về Button để lấy Tag, ép kiểu object của Tag về Table để lấy ID.
-            int tableID = ((sender as Button).Tag as Table).ID;
+            int tableID = ((sender as Button).Tag as Table).Id;
 
             gbBill.Text = "Hoá đơn chưa thanh toán [" + ((sender as Button)?.Tag as Table)?.Name + "]";
 
@@ -275,7 +276,7 @@ namespace CanteenManager
         private void tsmiAdmin_Click(object sender, EventArgs e)
         {
             fAdmin admin = new fAdmin(LoginAccount);
-            admin.FoodChange += delegate { LoadListFoodByCategoryID((cbCategory.SelectedItem as Category).ID); };
+            admin.FoodChange += delegate { LoadListFoodByCategoryID((cbCategory.SelectedItem as Category).Id); };
             admin.CategoryChange += delegate { LoadCategory(); };
             admin.TableChange += delegate { LoadButton(); LoadCbListTable(); };
             admin.AdminChange += delegate { LoginAccount = admin.LoginAdmin; };
@@ -293,8 +294,8 @@ namespace CanteenManager
             //Lấy ra Table lưu trong Tag của lsvBill
             Table table = (lsvBill.Tag as Button).Tag as Table;
 
-            int billID = BillDAO.Instance.GetUnCheckBillIDByTableID(table.ID);
-            int foodID = (int)(cbFood.SelectedItem as Food).ID;
+            int billID = BillDAO.Instance.GetUnCheckBillIdByTableId(table.Id);
+            int foodID = (cbFood.SelectedItem as Food).Id;
             int foodCount = (int)nmFoodCount.Value;
 
             if (billID == -1)
@@ -305,12 +306,16 @@ namespace CanteenManager
                 if (foodCount < 1) return;
 
                 //Tạo 1 Bill mới cho cái bàn được chọn
-                BillDAO.Instance.InsertBill(table.ID);
+                BillDAO.Instance.InsertBill(table.Id);
 
                 //Sau khi 1 Bill mới được tạo, nó sẽ có Status = 0, mỗi bàn chỉ có duy nhất 1 Bill như vậy
                 //=> Lúc này chạy BillDAO.Instance.GetUnCheckBillIDByTableID() sẽ được luôn ID của Bill vừa tạo
+                var id = BillDAO.Instance.GetUnCheckBillIdByTableId(table.Id);
+
+                Log.Info($"Insert Bill - Id: {id}");
+
                 //Thêm món cho Bill mới vừa tạo
-                BillInfoDAO.Instance.InsertBillInfo(BillDAO.Instance.GetUnCheckBillIDByTableID(table.ID), foodID, foodCount);
+                BillInfoDAO.Instance.InsertBillInfo(id, foodID, foodCount);
 
                 //Hiển thị lại trạng thái của bàn ăn sau khi thêm hoá đơn mới
                 Button_Click(lsvBill.Tag as Button, new EventArgs());
@@ -332,7 +337,7 @@ namespace CanteenManager
             }
 
             //Cập nhật lại thông tin cho lsvBill
-            ShowBillByTableID(table.ID);
+            ShowBillByTableID(table.Id);
 
         }
 
@@ -344,7 +349,7 @@ namespace CanteenManager
             //Lấy ra Table lưu trong Tag của lsvBill
             Table table = (lsvBill.Tag as Button).Tag as Table;
 
-            int billID = BillDAO.Instance.GetUnCheckBillIDByTableID(table.ID);
+            int billID = BillDAO.Instance.GetUnCheckBillIdByTableId(table.Id);
 
             int discount = (int)nmDiscount.Value;
 
@@ -360,8 +365,10 @@ namespace CanteenManager
                 {
                     BillDAO.Instance.CheckOut(billID, billFinalPrice, discount);
 
+                    Log.Info($"CheckOut Bill - Id: {billID}");
+
                     //Cập nhật lại thông tin cho lsvBill
-                    ShowBillByTableID(table.ID);
+                    ShowBillByTableID(table.Id);
 
                     nmDiscount.Value = 0;
 
@@ -406,9 +413,9 @@ namespace CanteenManager
                 return;
             }
 
-            int firstTableID = table.ID;
+            int firstTableID = table.Id;
 
-            int secondTableID = (cbListTable.SelectedValue as Table).ID;
+            int secondTableID = (cbListTable.SelectedValue as Table).Id;
 
             //Nếu 2 bàn được chọn trùng nhau thì không làm gì cả và thoát
             if (firstTableID == secondTableID)
@@ -424,7 +431,7 @@ namespace CanteenManager
                 //Click lại vào Button chứa bàn được chọn thứ 2 (chọn từ cbListTable)
                 foreach (Button button in flpTable.Controls)
                 {
-                    if ((button.Tag as Table).ID == secondTableID)
+                    if ((button.Tag as Table).Id == secondTableID)
                     {
                         RefreshButton(button);
 
@@ -456,9 +463,9 @@ namespace CanteenManager
                 return;
             }
 
-            int firstTableID = table.ID;
+            int firstTableID = table.Id;
            
-            int secondTableID = (cbListTable.SelectedValue as Table).ID;
+            int secondTableID = (cbListTable.SelectedValue as Table).Id;
 
             //Nếu 2 bàn được chọn trùng nhau thì không làm gì cả và thoát
             if (firstTableID == secondTableID)
@@ -474,7 +481,7 @@ namespace CanteenManager
                 //Click lại vào Button chứa bàn được chọn thứ 2 (chọn từ cbListTable)
                 foreach (Button button in flpTable.Controls)
                 {
-                    if ((button.Tag as Table).ID == secondTableID)
+                    if ((button.Tag as Table).Id == secondTableID)
                     {
                         Button_Click(button, new EventArgs());
                     }
@@ -494,9 +501,9 @@ namespace CanteenManager
 
             string pattern = @"\d+";
             var id = int.Parse(Regex.Match((sender as PrintDocument).DocumentName, pattern).Value);
-            var bill = BillDAO.Instance.GetBillByID(id);
+            var bill = BillDAO.Instance.GetBillById(id);
             
-            content = $"Ngày:\t\t {DateTime.Now.ToString("F")}\nID hoá đơn:\t {id}\nID bàn:\t\t {bill.TableID}";
+            content = $"Ngày:\t\t {DateTime.Now.ToString("F")}\nID hoá đơn:\t {id}\nID bàn:\t\t {bill.TableId}";
             e.Graphics.DrawString(content, fontRegular, Brushes.Black, 192, 120);
 
             Bitmap bitmap = new Bitmap(lsvBill.Width, lsvBill.Height, System.Drawing.Imaging.PixelFormat.Format32bppRgb);

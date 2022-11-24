@@ -1,4 +1,4 @@
-﻿using CanteenManager.Interface;
+﻿using Interfaces;
 using Unity;
 
 namespace CanteenManager.DAO
@@ -15,11 +15,11 @@ namespace CanteenManager.DAO
 
         private BillInfoDAO() { }
 
-        public void InsertBillInfo(int billID, int foodID, int foodCount)
+        public void InsertBillInfo(int billId, int foodId, int foodCount)
         {
-            string query = "EXEC USP_InsertBillInfo @billID, @foodID, @foodCount";
+            string query = "EXEC USP_InsertBillInfo @billId, @foodId, @foodCount";
 
-            DataProvider.Instance.ExecuteNonQuery(query, new object[] { billID, foodID, foodCount });
+            DataProvider.Instance.ExecuteNonQuery(query, new object[] { billId, foodId, foodCount });
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using CanteenManager.DTO;
-using CanteenManager.Interface;
+﻿using Interfaces;
+using Models;
 using System.Data;
 using Unity;
 
@@ -23,13 +23,13 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Lấy danh sách các Food dựa theo 1 CategoryID.
         /// </summary>
-        /// <param name="categoryID"></param>
+        /// <param name="categoryId"></param>
         /// <returns></returns>
-        public List<Food> GetListFoodByCategoryID(int categoryID)
+        public List<Food> GetListFoodByCategoryId(int categoryId)
         {
             List<Food> listFood = new List<Food>();
 
-            string query = "select * from Food where FoodStatus = 1 and CategoryID = " + categoryID;
+            string query = "select * from Food where FoodStatus = 1 and CategoryId = " + categoryId;
 
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
 
@@ -46,13 +46,12 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Lấy danh sách các Food.
         /// </summary>
-        /// <param name="categoryID"></param>
         /// <returns></returns>
         public List<Food> GetListFood()
         {
             List<Food> listFood = new List<Food>();
 
-            string query = "SELECT * FROM Food ORDER BY CategoryID ASC";
+            string query = "SELECT * FROM Food ORDER BY CategoryId ASC";
 
             DataTable data = DataProvider.Instance.ExecuteQuery(query);
 
@@ -66,22 +65,22 @@ namespace CanteenManager.DAO
             return listFood;
         }
 
-        public bool InsertFood(string name, int categoryID, double price)
+        public bool InsertFood(string name, int categoryId, double price)
         {
-            string query = "EXEC USP_InsertFood @name, @categoryID, @price";
+            string query = "EXEC USP_InsertFood @name, @categoryId, @price";
 
-            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { name, categoryID, price });
+            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { name, categoryId, price });
 
             if (result == 1) return true;
 
             return false;
         }
 
-        public bool UpdateFood(int id, string name, int categoryID, double price, int foodStatus)
+        public bool UpdateFood(int id, string name, int categoryId, double price, int foodStatus)
         {
-            string query = "EXEC USP_UpdateFood @id, @name, @categoryID, @price, @foodStatus";
+            string query = "EXEC USP_UpdateFood @id, @name, @categoryId, @price, @foodStatus";
 
-            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { id, name, categoryID, price, foodStatus });
+            int result = DataProvider.Instance.ExecuteNonQuery(query, new object[] { id, name, categoryId, price, foodStatus });
 
             if (result == 1) return true;
 
@@ -91,18 +90,18 @@ namespace CanteenManager.DAO
         /// <summary>
         /// Tìm Food.
         /// </summary>
-        /// <param name="foodName"></param>
+        /// <param name="input"></param>
         /// <param name="option">True để bỏ qua phân biệt Unicode, ngược lại, False.</param>
         /// <returns></returns>
-        public List<Food> SearchFood(string foodName, bool option)
-        {
-            List<Food> listFood = new List<Food>();
+        public List<Food> SearchFood(string input, bool option)
+        {           
+            string query = $"EXEC USP_SearchFood @foodName";
 
-            string query = $"SELECT * FROM Food WHERE Name LIKE N'%{foodName}%' ORDER BY CategoryID ASC";
+            if (option) query = $"EXEC USP_SearchFood @foodName , 1";
 
-            if (option) query = $"SELECT * FROM Food WHERE dbo.UF_ConvertToUnsigned(Name) LIKE dbo.UF_ConvertToUnsigned(N'%{foodName}%') ORDER BY CategoryID ASC";
+            DataTable data = DataProvider.Instance.ExecuteQuery(query, new object[] { input });
 
-            DataTable data = DataProvider.Instance.ExecuteQuery(query);
+            List<Food> listFood = new List<Food>(data.Rows.Count);
 
             foreach (DataRow row in data.Rows)
             {
@@ -120,7 +119,7 @@ namespace CanteenManager.DAO
         /// <param name="fromDate"></param>
         /// <param name="toDate"></param>
         /// <returns></returns>
-        public DataTable GetRevenueByFoodAndDate(DateTime fromDate, DateTime toDate)
+        public object GetRevenueByFoodAndDate(DateTime fromDate, DateTime toDate)
         {
             string query = "EXEC USP_GetRevenueByFoodAndDate @fromDate, @toDate";
 

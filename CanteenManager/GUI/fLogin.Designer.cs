@@ -304,6 +304,7 @@
             this.Controls.Add(this.plAdvanceOption);
             this.Controls.Add(this.lblTestConnection);
             this.Controls.Add(this.panel1);
+            this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(364, 1000);
             this.Name = "fLogin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

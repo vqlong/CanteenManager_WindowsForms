@@ -1,29 +1,29 @@
 ﻿using Interfaces;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 
-namespace CanteenManager.DAO
+namespace SQLiteDataAccess
 {
     /// <summary>
-    /// Chứa các phương thức làm việc với database của SQL Server.
+    /// Chứa các phương thức làm việc với database của SQLite.
     /// </summary>
     public class DataProvider : IDataProvider
     {
+        private DataProvider() { }
+
         private static readonly DataProvider instance = new DataProvider();
         public static DataProvider Instance => instance;
 
-        public string Name => "ADO.NET-SqlServer";
+        public string Name => "ADO.NET-SQLite";
 
-        private DataProvider() { }
-
-        private string connectionString = Config.ConnectionString;
+        private string connectionString = "Data Source = localdb.db; foreign keys=true";
 
         /// <summary>
-        /// Kiểm tra kết nối tới Server.
+        /// Kiểm tra kết nối.
         /// </summary>
-        /// <param name="connectionString"></param>
+        /// <param name="connectionString">Chuỗi kết nối.</param>
         /// <returns>
-        /// true, nếu thành công, đồng thời gán chuỗi kết nối này cho biến connectionString của DataProvider.
+        /// true, nếu thành công, đồng thời gán chuỗi kết nối này cho biến connectionString của SQLiteDataProvider.
         /// <br>nếu thất bại, thông báo lỗi và trả về false.</br>
         /// </returns>
         public bool TestConnection(string connectionString)
@@ -31,13 +31,13 @@ namespace CanteenManager.DAO
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SQLiteConnection connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand("SELECT 1", connection);
+                    SQLiteCommand command = new SQLiteCommand("SELECT 1", connection);
 
-                    if ((int)command.ExecuteScalar() == 1)
+                    if ((long)command.ExecuteScalar() == 1)
                     {
                         this.connectionString = connectionString;
                         return true;
@@ -48,10 +48,8 @@ namespace CanteenManager.DAO
                     }
                 }
             }
-            catch (Exception e)
+            catch
             {
-
-                MessageBox.Show("Kết nối thất bại!\n" + e.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -66,11 +64,11 @@ namespace CanteenManager.DAO
         {
             DataTable data = new DataTable();
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
+                SQLiteCommand command = new SQLiteCommand(query, connection);
 
                 if (parameter != null)
                 {
@@ -93,7 +91,7 @@ namespace CanteenManager.DAO
 
                 }
 
-                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
                 adapter.Fill(data);
 
             }
@@ -112,11 +110,11 @@ namespace CanteenManager.DAO
             //tạo biến chứa số dòng áp dụng thành công khi chạy câu truy vấn
             int data = 0;
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
+                SQLiteCommand command = new SQLiteCommand(query, connection);
 
                 if (parameter != null)
                 {
@@ -157,11 +155,11 @@ namespace CanteenManager.DAO
             //tạo biến chứa kết quả trả về
             object data = 0;
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
+                SQLiteCommand command = new SQLiteCommand(query, connection);
 
                 if (parameter != null)
                 {
