@@ -25,7 +25,7 @@ namespace EntityDataAccess
         {
             using var context = new CanteenContext();
 
-            return context.Foods.Where(f => f.CategoryId == categoryId).ToList();
+            return context.Foods.Where(f => f.CategoryId == categoryId && f.FoodStatus == UsingState.Serving).ToList();
         }
 
         public object GetRevenueByFoodAndDate(DateTime fromDate, DateTime toDate)

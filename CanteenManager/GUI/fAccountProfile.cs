@@ -73,9 +73,7 @@ namespace CanteenManager
                 else
                 {
                     MessageBox.Show("Cập nhật thất bại!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                
-                
+                }                              
             }
             else
             {
@@ -83,9 +81,7 @@ namespace CanteenManager
 
                 txbPassWord.Clear();
                 txbNewPassWord.Clear();
-                txbConfirmPassWord.Clear();
-                
-                
+                txbConfirmPassWord.Clear();                               
             }
         }
 
